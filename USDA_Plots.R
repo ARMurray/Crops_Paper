@@ -45,3 +45,5 @@ cottonPlot <- ggplot(cotton, aes(x=Year, y=Value, color=State))+
   theme(text = element_text(size = 14))
 
 cottonPlot
+
+# Hi Montana!
