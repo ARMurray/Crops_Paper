@@ -1,0 +1,332 @@
+---
+title: The Impact of Climate Extremes on Crop Yields in the Southeastern United States
+author: Andrew
+date: '2019-04-01'
+slug: climate-extremes-crop-yields
+categories:
+  - R
+tags:
+  - climate
+authors: []
+header:
+  caption: ''
+  image: ''
+  preview: yes
+---
+
+# This is our living document which will evolve into a paper to be published on the impact of climate extremes on crop yields in the southeastern United States
+
+## About this document 
+This document is written using R Markdown which means that all of the plots and statistics within it were created using actual code which will be presented alongside them. The data used in this research is all free and publicly available. Climate data (precipitation and temperature) was aquired from the [PRISM Climate Group](http://www.prism.oregonstate.edu/). Crop yield data was downloaded from the [USDA Quick Stats Database](https://quickstats.nass.usda.gov/).
+
+### Crop Data 
+While USDA crop data is available back into the early nineteen hundreds, we utilized data available in 1981 and onward due to limitations imposed by the PRISM climate model. Corn, cotton, peanuts, soybeans and sweet potatoes were identified as major crops grown in the Carolinas and Georgia which have an abundance of crop yield data available within this time period.
+
+### Climate Data 
+"PRISM datasets provide estimates of six basic climate elements: precipitation (ppt), minimum temperature (tmin), maximum temperature (tmax), mean dew point (tdmean), minimum vapor pressure deficit (vpdmin), and maximum vapor pressure deficit (vpdmax)." Precipitation and temperature are both avialable in daily, monthly and annual timescales at a spatial resolution of 4km (1981 - Present).
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+library(sf)
+library(miceadds)
+library(here)
+library(plm)
+```
+
+
+## Import formatted crop data
+
+```{r data_import}
+crops <- read.csv(here("data","FinalCrops.csv"))
+ppt <- read.csv(here("data","Num_ppt_Extreme_Days_Growing.csv"))
+temp <- read.csv(here("data","Num_TMax_Extreme_Days_Growing.csv"))
+zero <- read.csv(here("data","Num_Zero_Ppt_Days_Growing.csv"))
+
+```
+
+## Add join fields
+
+```{r joinCreate}
+ppt$join <- paste0(ppt$County,ppt$Year)
+temp$join <- paste0(temp$County,temp$Year)
+zero$join <- paste0(zero$County,zero$Year)
+
+```
+
+
+## Load Shapefile of Study Area
+```{r shapefile}
+counties <- st_read(here("data","counties.shp"))%>%
+  filter(STATEFP10 %in% c(37,45,13))
+
+```
+
+## Create subsets for each crop
+
+```{r}
+crops$FIPS <- paste0("F",crops$FIPS)
+crops$join <- paste0(crops$FIPS,crops$Year)
+
+crops <- merge(crops, ppt, by = "join")
+crops <- merge(crops, temp, by = "join")
+crops <- crops%>%
+  select(-X.x,-Year.x,-Year.y,-County.x,-X.y,-County.y)
+colnames(crops)[20:23] <- c("ExtPptDays","Year","Fips","ExtTempDays", "ZeroDays")
+crops <- merge(crops, zero, by = "join")
+
+
+soybeans <- crops%>%
+  filter(Commodity == "SOYBEANS")%>%
+  select(Value, FIPS,Year.x,ExtPptDays,ExtTempDays, NumZeroDays)
+
+corn <-  crops%>%
+  filter(Commodity == "CORN")%>%
+  select(Value, FIPS,Year.x,ExtPptDays,ExtTempDays, NumZeroDays)
+
+cotton <-  crops%>%
+  filter(Commodity == "COTTON")%>%
+  select(Value, FIPS,Year.x,ExtPptDays,ExtTempDays, NumZeroDays)
+
+peanuts <-  crops%>%
+  filter(Commodity == "PEANUTS")%>%
+  select(Value, FIPS,Year.x,ExtPptDays,ExtTempDays, NumZeroDays)
+
+sweetPotatoes <- crops%>%
+  filter(Commodity == "SWEET POTATOES")%>%
+  select(Value, FIPS,Year.x,ExtPptDays,ExtTempDays, NumZeroDays)
+
+
+```
+
+
+# Filter to keep only counties with >29 years of records
+```{r}
+# Soybeans
+counts <- as.data.frame(table(soybeans$FIPS))
+GT30 <- counts%>%
+  filter(Freq > 29)
+countiesGT30 <- GT30$Var1
+
+soybeanCounts <- counts
+soybeanCounties <- nrow(counts)
+soybeanCountiesGT30 <- nrow(GT30)
+
+soybeans <- soybeans%>%
+  filter(FIPS %in% countiesGT30)
+
+# Corn
+counts <- as.data.frame(table(corn$FIPS))
+GT30 <- counts%>%
+  filter(Freq > 29)
+countiesGT30 <- GT30$Var1
+
+cornCounts <- counts
+cornCounties <- nrow(counts)
+cornCountiesGT30 <- nrow(GT30)
+
+corn <- corn%>%
+  filter(FIPS %in% countiesGT30)
+
+# Cotton
+counts <- as.data.frame(table(cotton$FIPS))
+GT30 <- counts%>%
+  filter(Freq > 29)
+countiesGT30 <- GT30$Var1
+
+cottonCounts <- counts
+cottonCounties <- nrow(counts)
+cottonCountiesGT30 <- nrow(GT30)
+
+cotton <- cotton%>%
+  filter(FIPS %in% countiesGT30)
+
+# Peanuts
+counts <- as.data.frame(table(peanuts$FIPS))
+GT30 <- counts%>%
+  filter(Freq > 29)
+countiesGT30 <- GT30$Var1
+
+peanutsCounts <- counts
+peanutsCounties <- nrow(counts)
+peanutsCountiesGT30 <- nrow(GT30)
+
+peanuts <- peanuts%>%
+  filter(FIPS %in% countiesGT30)
+
+# Sweet Potatoes
+counts <- as.data.frame(table(sweetPotatoes$FIPS))
+GT30 <- counts%>%
+  filter(Freq > 29)
+countiesGT30 <- GT30$Var1
+
+sweetPotatoCounts <- counts
+sweetPotatoesCounties <- nrow(counts)
+sweetPotatoesCountiesGT30 <- nrow(GT30)
+
+sweetPotatoes <- sweetPotatoes%>%
+  filter(FIPS %in% countiesGT30)
+
+```
+
+## Calculate Yield Percent Change
+```{r}
+fit <- lmList(Value ~ Year | FIPS , data=sweetPotatoes)
+sweetPotatoes$predicted <- predict(fit)
+sweetPotatoes$residuals <- residuals(fit)
+sweetPotatoes$YieldPercentChange <- ((sweetPotatoes$Value - sweetPotatoes$predicted)/sweetPotatoes$predicted)*100
+
+# Repeat for each crop
+fit <- lmList(Value ~ Year | FIPS , data=sweetPotatoes)
+sweetPotatoes$predicted <- predict(fit)
+sweetPotatoes$residuals <- residuals(fit)
+sweetPotatoes$YieldPercentChange <- ((sweetPotatoes$Value - sweetPotatoes$predicted)/sweetPotatoes$predicted)*100
+
+```
+
+
+
+## Data Description
+```{r, echo=FALSE}
+countdf <- data.frame("Crop"=c("Corn","Cotton","Peanuts","Soybeans","Sweet Potatoes"),
+                      "Counties Grown" = c(cornCounties,cottonCounties,peanutsCounties,
+                                           soybeanCounties,sweetPotatoesCounties),
+                      "Counties with 30 years of data" = c(cornCountiesGT30,cottonCountiesGT30, peanutsCountiesGT30,soybeanCountiesGT30,sweetPotatoesCountiesGT30),
+                      "Data Points" = c(nrow(corn),nrow(cotton),nrow(peanuts),
+                                        nrow(soybeans),nrow(sweetPotatoes)))
+
+countdf
+```
+
+# Crop Maps
+```{r sfFormat, echo=FALSE, message=FALSE}
+sf <- counties%>%
+  select(GEOID10)
+sf$FIPS <- paste0("F",sf$GEOID10)
+
+sf <- merge(sf, cornCounts, by.x = "FIPS", by.y = "Var1",all.x = TRUE )
+sf <- merge(sf, cottonCounts, by.x = "FIPS", by.y = "Var1",all.x = TRUE)
+sf <- merge(sf, peanutsCounts, by.x = "FIPS", by.y = "Var1",all.x = TRUE)
+sf <- merge(sf, soybeanCounts, by.x = "FIPS", by.y = "Var1",all.x = TRUE)
+sf <- merge(sf, sweetPotatoCounts, by.x = "FIPS", by.y = "Var1",all.x = TRUE)
+colnames(sf) <- c("FIPS","GEOID10","Corn","Cotton","Peanuts","Soybeans","SweetPotatoes","geometry")
+```
+## Corn
+```{r cornMap, echo=FALSE}
+ggplot()+
+  geom_sf(data = sf, aes(fill = Corn))+
+  scale_fill_gradient(low = "black", high = "yellow")+
+  labs(title = "Years of Corn Yield Data between 1981-2017")+
+  guides(fill=guide_colorbar(title="Years of Data"))
+```
+
+## Cotton
+```{r cottonMap, echo=FALSE}
+ggplot()+
+  geom_sf(data = sf, aes(fill = Cotton))+
+  scale_fill_gradient(low = "white", high = "blue")+
+  labs(title = "Years of Cotten Yield Data between 1981-2017")+
+  guides(fill=guide_colorbar(title="Years of Data"))
+```
+
+
+## Peanuts
+```{r peanutsMap, echo=FALSE}
+ggplot()+
+  geom_sf(data = sf, aes(fill = Peanuts))+
+  scale_fill_gradient(low = "white", high = "#874e00")+
+  labs(title = "Years of Peanut Yield Data between 1981-2017")+
+  guides(fill=guide_colorbar(title="Years of Data"))
+```
+
+
+## Soybeans
+```{r soybeansMap, echo=FALSE}
+ggplot()+
+  geom_sf(data = sf, aes(fill = Soybeans))+
+  scale_fill_gradient(low = "white", high = "#ba14a1")+
+  labs(title = "Years of Soybean Yield Data between 1981-2017")+
+  guides(fill=guide_colorbar(title="Years of Data"))
+```
+
+
+## Sweet Potatoes
+```{r sweetPotatoesMap, echo=FALSE}
+ggplot()+
+  geom_sf(data = sf, aes(fill = SweetPotatoes))+
+  scale_fill_gradient(low = "white", high = "#d67d02")+
+  labs(title = "Years of Sweet Potato Yield Data between 1981-2017")+
+  guides(fill=guide_colorbar(title="Years of Data"))
+```
+
+# Analysis by crop
+The current process we qare using is to de-mean the yields by subtracting yield from mean yield (accross all years) by county. Then we detrend the effects of time on yield of crops by subtracting the residuals of yield~year from yield. We then run a regression which includes extreme precipitation days, extreme temperature days, and year and county as factors.
+
+## Soybeans
+```{r soybeans}
+# Soybeans
+
+lmSoybeans <- lm(soybeans$Value~soybeans$ExtPptDays+soybeans$ExtTempDays+soybeans$Year+soybeans$NumZeroDays+factor(soybeans$FIPS))
+summary(lmSoybeans)
+summary(lmSoybeans)$r.squared
+
+
+#Cluster
+
+#model <- plm(price ~ sales, model = 'within', data = Cigar)
+#G <- length(unique(Cigar$state))
+#c <- G/(G - 1)
+#coeftest(model,c * vcovHC(model, type = "HC1", cluster = "group"))
+```
+
+## Corn
+```{r}
+# Corn
+
+lmCorn <- lm(corn$Value~corn$ExtPptDays+corn$ExtTempDays+corn$Year+corn$NumZeroDays+factor(corn$FIPS))
+summary(lmCorn)
+summary(lmCorn)$r.squared
+
+```
+
+## Cotton
+```{r}
+# Cotton
+
+lmCotton <- lm(cotton$Value~cotton$ExtPptDays+cotton$ExtTempDays+cotton$Year+cotton$NumZeroDays+factor(cotton$FIPS))
+summary(lmCotton)
+summary(lmCotton)$r.squared
+
+```
+
+## Peanuts
+```{r}
+# Peanuts
+
+lmPeanuts <- lm(peanuts$Value~peanuts$ExtPptDays+peanuts$ExtTempDays+peanuts$Year+peanuts$NumZeroDays+factor(peanuts$FIPS))
+summary(lmPeanuts)
+summary(lmPeanuts)$r.squared
+
+```
+
+## Sweet Potatoes
+```{r}
+# Sweet Potatoes
+
+
+lmSweetPotatoes<- lm(sweetPotatoes$Value~sweetPotatoes$ExtPptDays+sweetPotatoes$ExtTempDays+sweetPotatoes$Year+sweetPotatoes$NumZeroDays+factor(sweetPotatoes$FIPS))
+summary(lmSweetPotatoes)
+summary(lmSweetPotatoes)$r.squared
+
+```
+
+
+
+
+
+## References
+Daly, Christopher, et al. ["Physiographically sensitive mapping of climatological temperature and precipitation across the conterminous United States."](https://rmets.onlinelibrary.wiley.com/doi/abs/10.1002/joc.1688) International Journal of Climatology: a Journal of the Royal Meteorological Society 28.15 (2008): 2031-2064.
