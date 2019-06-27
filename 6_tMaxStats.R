@@ -112,8 +112,8 @@ for(n in 1981:2017){
 }
 
 colnames(outdf) <- c("Year","County","NumTempDays90", "County1", "NumTempDays95", "County2", "NumTempDays99")
-
-#write.csv(outdf, "data/Num_temp_Extreme_Days.csv")
+c <- merge(outdf,meanMerge, by.x=c("County", "Year"), by.y=c("County", "year"), all=TRUE)
+#write.csv(c, "data/Num_temp_Extreme_Days.csv")
 
 #Do we really need this?
 dfSpread <- spread(outdf, County, NumDays)
