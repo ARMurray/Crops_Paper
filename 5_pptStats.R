@@ -67,7 +67,7 @@ for(n in 1:length(counties)){
   outData <- rbind(outData, newData)
 }
 
-#write.csv(outData, "~/Documents/Geog_803/Analysis/PPT_Extremes.csv")
+#write.csv(outData, "data/PPT_Extremes.csv")
 
 # Count number of days by year that ppt extremes were exceeded
 
@@ -92,7 +92,7 @@ for(n in 1981:2017){
 
 colnames(outdf) <- c("Year","County","NumpptDays90", "County", "NumpptDays95", "County", "NumpptDays99")
 
-#write.csv(outdf, "~/Documents/Geog_803/Analysis/Num_ppt_Extreme_Days.csv")
+#write.csv(outdf, "data/Num_ppt_Extreme_Days.csv")
 
 # Do we need this?
 dfSpread <- spread(outdf, County, NumDays)

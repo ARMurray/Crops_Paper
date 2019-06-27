@@ -66,7 +66,7 @@ for(n in 1:length(counties)){
   outData <- rbind(outData, newData)
 }
 
-write.csv(outData, "~/Documents/Geog_803/Analysis/temp_Extremes.csv")
+#write.csv(outData, "data/temp_Extremes.csv")
 
 # Count number of days by year that temp extremes were exceeded
 #This needs to be done for each month
@@ -92,13 +92,13 @@ for(n in 1981:2017){
 
 colnames(outdf) <- c("Year","County","NumTempDays90", "County", "NumTempDays95", "County", "NumTempDays99")
 
-write.csv(outdf, "~/Documents/Geog_803/Analysis/Num_temp_Extreme_Days.csv")
+#write.csv(outdf, "data/Num_temp_Extreme_Days.csv")
 
 
 
 
 #Do we really need this?
 dfSpread <- spread(outdf, County, NumDays)
-write.csv(dfSpread, "~/Documents/Geog_803/Analysis/Num_temp_Extreme_Days_Wide.csv")
+#write.csv(dfSpread, "data/Num_temp_Extreme_Days_Wide.csv")
 
 
