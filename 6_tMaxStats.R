@@ -26,6 +26,23 @@ tempFlip <- filter(tempFlip, month %in% 5:10)
 
 grpCounty <- group_by(tempFlip, County)
 
+#Calculate Growing Season and Standard Deviation Average High Temps
+tempaverage <- tempFlip %>%
+  group_by(County, year) %>%
+  summarize(meantemp = mean(temp))
+
+tempaverage1 <- tempaverage %>%
+  group_by(County) %>%
+  summarize(Average = mean(meantemp))
+
+tempaverage2 <- tempaverage %>%
+  group_by(County) %>%
+  summarize(sd = sd(meantemp))
+
+meanMerge <- merge(tempaverage, tempaverage1, by="County", all=TRUE)
+meanMerge <- merge(meanMerge, tempaverage2, by="County", all=TRUE)
+meanMerge$Anomaly <- ((meanMerge$meantemp-meanMerge$Average)/meanMerge$sd)
+
 #Create Monthly Subsets
 
 maytemp  <- tempFlip %>%
@@ -94,12 +111,9 @@ for(n in 1981:2017){
   
 }
 
-colnames(outdf) <- c("Year","County","NumTempDays90", "County", "NumTempDays95", "County", "NumTempDays99")
+colnames(outdf) <- c("Year","County","NumTempDays90", "County1", "NumTempDays95", "County2", "NumTempDays99")
 
 #write.csv(outdf, "data/Num_temp_Extreme_Days.csv")
-
-
-
 
 #Do we really need this?
 dfSpread <- spread(outdf, County, NumDays)
