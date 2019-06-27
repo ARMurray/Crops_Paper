@@ -18,7 +18,11 @@ seCounties$ID <- paste0("F",seCounties$STATEFP,seCounties$COUNTYFP)
 
 pptFlip <- gather(ppt, County, ppt, -Date)
 
+pptFlip$Date <- as.Date(pptFlip$Date)
+
 pptFlip <- pptFlip %>% separate(Date, sep="/", into = c("day", "month", "year"))
+pptFlip$month <- as.numeric(pptFlip$month)
+pptFlip <- filter(pptFlip, month %in% 5:10)
 
 grpCounty <- group_by(pptFlip, County)
 
@@ -77,14 +81,12 @@ outdf <- data.frame()
 for(n in 1981:2017){
   data <- pptMerge%>%
     filter(year == n)
-  days90 <- group_by(data, County)%>%
+  days90 <- group_by(data, County, month)%>%
     tally(ppt>Quant90)
-  days95 <- group_by(data, County)%>%
+  days95 <- group_by(data, County, month)%>%
     tally(ppt>Quant95)
-  days99 <- group_by(data, County)%>%
+  days99 <- group_by(data, County, month)%>%
     tally(ppt>Quant99)
-  seasontotal <- group_by(data, County)%>%
-    tally(ppt)
   output <- data.frame("Year" = data$year[1], "extpptDays90" = days90, "extpptDays95" = days95,"extpptDays99" = days99)
   outdf <- rbind(outdf, output)
   
@@ -92,7 +94,7 @@ for(n in 1981:2017){
 
 colnames(outdf) <- c("Year","County","NumpptDays90", "County", "NumpptDays95", "County", "NumpptDays99")
 
-#write.csv(outdf, "data/Num_ppt_Extreme_Days.csv")
+write.csv(outdf, "data/Num_ppt_Extreme_Days.csv")
 
 # Do we need this?
 dfSpread <- spread(outdf, County, NumDays)

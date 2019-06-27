@@ -17,8 +17,12 @@ seCounties <- counties%>%
 seCounties$ID <- paste0("F",seCounties$STATEFP,seCounties$COUNTYFP)
 
 tempFlip <- gather(temp, County, temp, -Date)
+tempFlip$Date <- as.Date(tempFlip$Date)
 
 tempFlip <- tempFlip %>% separate(Date, sep="-", into = c("year", "month", "day"))
+tempFlip$month <- as.numeric(tempFlip$month)
+
+tempFlip <- filter(tempFlip, month %in% 5:10)
 
 grpCounty <- group_by(tempFlip, County)
 
