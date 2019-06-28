@@ -147,12 +147,12 @@ for(n in 1:length(counties)){
   octData <- rbind(octData, newData)
 }
 
-write.csv(mayData, "data/maytemp_Extremes.csv")
-write.csv(junData, "data/juntemp_Extremes.csv")
-write.csv(julData, "data/jultemp_Extremes.csv")
-write.csv(augData, "data/augtemp_Extremes.csv")
-write.csv(sepData, "data/septemp_Extremes.csv")
-write.csv(octData, "data/octtemp_Extremes.csv")
+#write.csv(mayData, "data/maytemp_Extremes.csv")
+#write.csv(junData, "data/juntemp_Extremes.csv")
+#write.csv(julData, "data/jultemp_Extremes.csv")
+#write.csv(augData, "data/augtemp_Extremes.csv")
+#write.csv(sepData, "data/septemp_Extremes.csv")
+#write.csv(octData, "data/octtemp_Extremes.csv")
 
 # Count number of days by year that temp extremes were exceeded
 #This needs to be done for each month
@@ -272,12 +272,13 @@ sep <- merge(sepdf,meanMerge, by.x=c("County", "Year"), by.y=c("County", "year")
 
 colnames(octdf) <- c("Year","County","NumTempDays90", "County1", "NumTempDays95", "County2", "NumTempDays99")
 oct <- merge(octdf,meanMerge, by.x=c("County", "Year"), by.y=c("County", "year"), all=TRUE)
-write.csv(may, "data/Num_maytemp_Extreme_Days.csv")
-write.csv(jun, "data/Num_juntemp_Extreme_Days.csv")
-write.csv(jul, "data/Num_jultemp_Extreme_Days.csv")
-write.csv(aug, "data/Num_augtemp_Extreme_Days.csv")
-write.csv(sep, "data/Num_septemp_Extreme_Days.csv")
-write.csv(oct, "data/Num_octtemp_Extreme_Days.csv")
+
+#write.csv(may, "data/Num_maytemp_Extreme_Days.csv")
+#write.csv(jun, "data/Num_juntemp_Extreme_Days.csv")
+#write.csv(jul, "data/Num_jultemp_Extreme_Days.csv")
+#write.csv(aug, "data/Num_augtemp_Extreme_Days.csv")
+#write.csv(sep, "data/Num_septemp_Extreme_Days.csv")
+#write.csv(oct, "data/Num_octtemp_Extreme_Days.csv")
 
 
 
