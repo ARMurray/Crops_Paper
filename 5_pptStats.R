@@ -145,12 +145,12 @@ for(n in 1:length(counties)){
   octData <- rbind(octData, newData)
 }
 
-write.csv(mayData, "data/mayppt_Extremes.csv")
-write.csv(junData, "data/junppt_Extremes.csv")
-write.csv(julData, "data/julppt_Extremes.csv")
-write.csv(augData, "data/augppt_Extremes.csv")
-write.csv(sepData, "data/sepppt_Extremes.csv")
-write.csv(octData, "data/octppt_Extremes.csv")
+#write.csv(mayData, "data/mayppt_Extremes.csv")
+#write.csv(junData, "data/junppt_Extremes.csv")
+#write.csv(julData, "data/julppt_Extremes.csv")
+#write.csv(augData, "data/augppt_Extremes.csv")
+#write.csv(sepData, "data/sepppt_Extremes.csv")
+#write.csv(octData, "data/octppt_Extremes.csv")
 
 
 # Count number of days by year that ppt extremes were exceeded
@@ -253,42 +253,34 @@ for(n in 1981:2017){
   
 }
 
+
 colnames(maydf) <- c("Year","County","maypptDays90", "County1", "maypptDays95", "County2", "maypptDays99")
-may <- merge(maydf,meanMerge, by.x=c("County", "Year"), by.y=c("County", "year"), all=TRUE)
-mayppt <- may%>%
-  select(-County1,-County2)
-
 colnames(jundf) <- c("Year","County","junpptDays90", "County1", "junpptDays95", "County2", "junpptDays99")
-jun <- merge(jundf,meanMerge, by.x=c("County", "Year"), by.y=c("County", "year"), all=TRUE)
-junppt <- jun%>%
-  select(-County1,-County2)
-
 colnames(juldf) <- c("Year","County","julpptDays90", "County1", "julpptDays95", "County2", "julpptDays99")
-jul <- merge(juldf,meanMerge, by.x=c("County", "Year"), by.y=c("County", "year"), all=TRUE)
-julppt <- jul%>%
-  select(-County1,-County2)
-
 colnames(augdf) <- c("Year","County","augpptDays90", "County1", "augpptDays95", "County2", "augpptDays99")
-aug <- merge(augdf,meanMerge, by.x=c("County", "Year"), by.y=c("County", "year"), all=TRUE)
-augppt <- aug%>%
-  select(-County1,-County2)
-
 colnames(sepdf) <- c("Year","County","seppptDays90", "County1", "seppptDays95", "County2", "seppptDays99")
-sep <- merge(sepdf,meanMerge, by.x=c("County", "Year"), by.y=c("County", "year"), all=TRUE)
-sepppt <- sep%>%
-  select(-County1,-County2)
-
 colnames(octdf) <- c("Year","County","octpptDays90", "County1", "octpptDays95", "County2", "octpptDays99")
-oct <- merge(octdf,meanMerge, by.x=c("County", "Year"), by.y=c("County", "year"), all=TRUE)
-octppt <- oct%>%
+maydf <- maydf%>%
+  select(-County1,-County2)
+jundf <- jundf%>%
+  select(-County1,-County2)
+juldf <- juldf%>%
+  select(-County1,-County2)
+augdf <- augdf%>%
+  select(-County1,-County2)
+sepdf <- sepdf%>%
+  select(-County1,-County2)
+octdf <- octdf%>%
   select(-County1,-County2)
 
-write.csv(mayppt, "data/Num_mayppt_Extreme_Days.csv")
-write.csv(junppt, "data/Num_junppt_Extreme_Days.csv")
-write.csv(julppt, "data/Num_julppt_Extreme_Days.csv")
-write.csv(augppt, "data/Num_augppt_Extreme_Days.csv")
-write.csv(sepppt, "data/Num_sepppt_Extreme_Days.csv")
-write.csv(octppt, "data/Num_octppt_Extreme_Days.csv")
+pptfinal <- merge(maydf,jundf, by.x=c("County", "Year"), by.y=c("County", "Year"), all=TRUE)
+pptfinal <- merge(pptfinal,juldf, by.x=c("County", "Year"), by.y=c("County", "Year"), all=TRUE)
+pptfinal <- merge(pptfinal,augdf, by.x=c("County", "Year"), by.y=c("County", "Year"), all=TRUE)
+pptfinal <- merge(pptfinal,sepdf, by.x=c("County", "Year"), by.y=c("County", "Year"), all=TRUE)
+pptfinal <- merge(pptfinal,octdf, by.x=c("County", "Year"), by.y=c("County", "Year"), all=TRUE)
+pptfinal <- merge(pptfinal,meanMerge, by.x=c("County", "Year"), by.y=c("County", "year"), all=TRUE)
+
+#write.csv(pptfinal, "data/Num_mayppt_Extreme_Days.csv")
 
 # Do we need this?
 #dfSpread <- spread(outdf, County, NumDays)
