@@ -254,45 +254,39 @@ for(n in 1981:2017){
   octdf <- rbind(octdf, output)
   
 }
-
 colnames(maydf) <- c("Year","County","maytempDays90", "County1", "maytempDays95", "County2", "maytempDays99")
-may <- merge(maydf,meanMerge, by.x=c("County", "Year"), by.y=c("County", "year"), all=TRUE)
-maytemp <- may%>%
-  select(-County1,-County2)
-
 colnames(jundf) <- c("Year","County","juntempDays90", "County1", "juntempDays95", "County2", "juntempDays99")
-jun <- merge(jundf,meanMerge, by.x=c("County", "Year"), by.y=c("County", "year"), all=TRUE)
-juntemp <- jun%>%
-  select(-County1,-County2)
-
 colnames(juldf) <- c("Year","County","jultempDays90", "County1", "jultempDays95", "County2", "jultempDays99")
-jul <- merge(juldf,meanMerge, by.x=c("County", "Year"), by.y=c("County", "year"), all=TRUE)
-jultemp <- jul%>%
-  select(-County1,-County2)
-
 colnames(augdf) <- c("Year","County","augtempDays90", "County1", "augtempDays95", "County2", "augtempDays99")
-aug <- merge(augdf,meanMerge, by.x=c("County", "Year"), by.y=c("County", "year"), all=TRUE)
-augtemp <- aug%>%
-  select(-County1,-County2)
-
 colnames(sepdf) <- c("Year","County","septempDays90", "County1", "septempDays95", "County2", "septempDays99")
-sep <- merge(sepdf,meanMerge, by.x=c("County", "Year"), by.y=c("County", "year"), all=TRUE)
-septemp <- sep%>%
-  select(-County1,-County2)
-
 colnames(octdf) <- c("Year","County","octtempDays90", "County1", "octtempDays95", "County2", "octtempDays99")
-oct <- merge(octdf,meanMerge, by.x=c("County", "Year"), by.y=c("County", "year"), all=TRUE)
-octtemp <- oct%>%
+maydf <- maydf%>%
+  select(-County1,-County2)
+jundf <- jundf%>%
+  select(-County1,-County2)
+juldf <- juldf%>%
+  select(-County1,-County2)
+augdf <- augdf%>%
+  select(-County1,-County2)
+sepdf <- sepdf%>%
+  select(-County1,-County2)
+octdf <- octdf%>%
   select(-County1,-County2)
 
-#write.csv(maytemp, "data/Num_maytemp_Extreme_Days.csv")
-#write.csv(juntemp, "data/Num_juntemp_Extreme_Days.csv")
-#write.csv(jultemp, "data/Num_jultemp_Extreme_Days.csv")
-#write.csv(augtemp, "data/Num_augtemp_Extreme_Days.csv")
-#write.csv(septemp, "data/Num_septemp_Extreme_Days.csv")
-#write.csv(octtemp, "data/Num_octtemp_Extreme_Days.csv")
+#Combine Into One Document
 
+tempfinal <- merge(maydf,jundf, by.x=c("County", "Year"), by.y=c("County", "Year"), all=TRUE)
+tempfinal <- merge(tempfinal,juldf, by.x=c("County", "Year"), by.y=c("County", "Year"), all=TRUE)
+tempfinal <- merge(tempfinal,augdf, by.x=c("County", "Year"), by.y=c("County", "Year"), all=TRUE)
+tempfinal <- merge(tempfinal,sepdf, by.x=c("County", "Year"), by.y=c("County", "Year"), all=TRUE)
+tempfinal <- merge(tempfinal,octdf, by.x=c("County", "Year"), by.y=c("County", "Year"), all=TRUE)
+tempfinal <- merge(tempfinal,meanMerge, by.x=c("County", "Year"), by.y=c("County", "year"), all=TRUE)
 
+#Merge PPT and Temp Final 
+COMBO <- merge(tempfinal,pptfinal, by.x=c("County", "Year"), by.y=c("County", "Year"), all=TRUE)
+
+#write.csv(COMBO, "data/ppt_temp_combined.csv")
+#write.csv(tempfinal, "data/Num_temp_Extreme_Days.csv")
 
 #Do we really need this?
 dfSpread <- spread(outdf, County, NumDays)

@@ -273,6 +273,8 @@ sepdf <- sepdf%>%
 octdf <- octdf%>%
   select(-County1,-County2)
 
+#Combine Into One Document
+
 pptfinal <- merge(maydf,jundf, by.x=c("County", "Year"), by.y=c("County", "Year"), all=TRUE)
 pptfinal <- merge(pptfinal,juldf, by.x=c("County", "Year"), by.y=c("County", "Year"), all=TRUE)
 pptfinal <- merge(pptfinal,augdf, by.x=c("County", "Year"), by.y=c("County", "Year"), all=TRUE)
@@ -280,7 +282,7 @@ pptfinal <- merge(pptfinal,sepdf, by.x=c("County", "Year"), by.y=c("County", "Ye
 pptfinal <- merge(pptfinal,octdf, by.x=c("County", "Year"), by.y=c("County", "Year"), all=TRUE)
 pptfinal <- merge(pptfinal,meanMerge, by.x=c("County", "Year"), by.y=c("County", "year"), all=TRUE)
 
-#write.csv(pptfinal, "data/Num_mayppt_Extreme_Days.csv")
+#write.csv(pptfinal, "data/Num_ppt_Extreme_Days.csv")
 
 # Do we need this?
 #dfSpread <- spread(outdf, County, NumDays)
