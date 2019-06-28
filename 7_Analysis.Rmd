@@ -42,10 +42,8 @@ library(plm)
 ## Import formatted crop data
 
 ```{r data_import}
-crops <- read.csv(here("data","FinalCrops.csv"))
-ppt <- read.csv(here("data","Num_ppt_Extreme_Days_Growing.csv"))
-temp <- read.csv(here("data","Num_TMax_Extreme_Days_Growing.csv"))
-zero <- read.csv(here("data","Num_Zero_Ppt_Days_Growing.csv"))
+crops <- read.csv(here("data","FinalCrops2.csv"))
+ppt <- read.csv(here("data","ppt_temp_combined.csv"))
 
 ```
 
@@ -53,8 +51,6 @@ zero <- read.csv(here("data","Num_Zero_Ppt_Days_Growing.csv"))
 
 ```{r joinCreate}
 ppt$join <- paste0(ppt$County,ppt$Year)
-temp$join <- paste0(temp$County,temp$Year)
-zero$join <- paste0(zero$County,zero$Year)
 
 ```
 
@@ -72,33 +68,22 @@ counties <- st_read("data/countiesusa/cb_2017_us_county_5m.shp")%>%
 crops$FIPS <- paste0("F",crops$FIPS)
 crops$join <- paste0(crops$FIPS,crops$Year)
 
-crops <- merge(crops, ppt, by = "join")
-crops <- merge(crops, temp, by = "join")
-crops <- crops%>%
-  select(-X.x,-Year.x,-Year.y,-County.x,-X.y,-County.y)
-colnames(crops)[20:23] <- c("ExtPptDays","Year","Fips","ExtTempDays", "ZeroDays")
-crops <- merge(crops, zero, by = "join")
-
+crops <- merge(ppt, crops, by = "join")
 
 soybeans <- crops%>%
-  filter(Commodity == "SOYBEANS")%>%
-  select(Value, FIPS,Year.x,ExtPptDays,ExtTempDays, NumZeroDays)
-
+  filter(Commodity == "SOYBEANS")
 corn <-  crops%>%
-  filter(Commodity == "CORN")%>%
-  select(Value, FIPS,Year.x,ExtPptDays,ExtTempDays, NumZeroDays)
+  filter(Commodity == "CORN")
 
 cotton <-  crops%>%
-  filter(Commodity == "COTTON")%>%
-  select(Value, FIPS,Year.x,ExtPptDays,ExtTempDays, NumZeroDays)
+  filter(Commodity == "COTTON")
 
 peanuts <-  crops%>%
-  filter(Commodity == "PEANUTS")%>%
-  select(Value, FIPS,Year.x,ExtPptDays,ExtTempDays, NumZeroDays)
+  filter(Commodity == "PEANUTS")
 
 sweetPotatoes <- crops%>%
-  filter(Commodity == "SWEET POTATOES")%>%
-  select(Value, FIPS,Year.x,ExtPptDays,ExtTempDays, NumZeroDays)
+  filter(Commodity == "SWEET POTATOES")
+
 
 
 ```
@@ -176,31 +161,31 @@ sweetPotatoes <- sweetPotatoes%>%
 ## Calculate Yield Percent Change
 ```{r}
 #sweetPotatoes
-fit <- lmList(Value ~ Year | FIPS , data=sweetPotatoes)
+fit <- lmList(Value ~ Year.x | FIPS , data=sweetPotatoes)
 sweetPotatoes$predicted <- predict(fit)
 sweetPotatoes$residuals <- residuals(fit)
 sweetPotatoes$YieldPercentChange <- ((sweetPotatoes$Value - sweetPotatoes$predicted)/sweetPotatoes$predicted)*100
 
 #soybeans
-fit <- lmList(Value ~ Year | FIPS , data=soybeans)
+fit <- lmList(Value ~ Year.x | FIPS , data=soybeans)
 soybeans$predicted <- predict(fit)
 soybeans$residuals <- residuals(fit)
 soybeans$YieldPercentChange <- ((soybeans$Value - soybeans$predicted)/soybeans$predicted)*100
 
 #cotton
-fit <- lmList(Value ~ Year | FIPS , data=cotton)
+fit <- lmList(Value ~ Year.x | FIPS , data=cotton)
 cotton$predicted <- predict(fit)
 cotton$residuals <- residuals(fit)
 cotton$YieldPercentChange <- ((cotton$Value - cotton$predicted)/cotton$predicted)*100
 
 #corn
-fit <- lmList(Value ~ Year | FIPS , data=corn)
+fit <- lmList(Value ~ Year.x | FIPS , data=corn)
 corn$predicted <- predict(fit)
 corn$residuals <- residuals(fit)
 corn$YieldPercentChange <- ((corn$Value - corn$predicted)/corn$predicted)*100
 
 #peanuts
-fit <- lmList(Value ~ Year | FIPS , data=peanuts)
+fit <- lmList(Value ~ Year.x | FIPS , data=peanuts)
 peanuts$predicted <- predict(fit)
 peanuts$residuals <- residuals(fit)
 peanuts$YieldPercentChange <- ((peanuts$Value - peanuts$predicted)/peanuts$predicted)*100
