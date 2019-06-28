@@ -255,23 +255,35 @@ for(n in 1981:2017){
   
 }
 
-colnames(maydf) <- c("Year","County","NumTempDays90", "County1", "NumTempDays95", "County2", "NumTempDays99")
+colnames(maydf) <- c("Year","County","maytempDays90", "County1", "maytempDays95", "County2", "maytempDays99")
 may <- merge(maydf,meanMerge, by.x=c("County", "Year"), by.y=c("County", "year"), all=TRUE)
+may <- may%>%
+  select(-County1,-County2)
 
-colnames(jundf) <- c("Year","County","NumTempDays90", "County1", "NumTempDays95", "County2", "NumTempDays99")
+colnames(jundf) <- c("Year","County","juntempDays90", "County1", "juntempDays95", "County2", "juntempDays99")
 jun <- merge(jundf,meanMerge, by.x=c("County", "Year"), by.y=c("County", "year"), all=TRUE)
+jun <- jun%>%
+  select(-County1,-County2)
 
-colnames(juldf) <- c("Year","County","NumTempDays90", "County1", "NumTempDays95", "County2", "NumTempDays99")
+colnames(juldf) <- c("Year","County","jultempDays90", "County1", "jultempDays95", "County2", "jultempDays99")
 jul <- merge(juldf,meanMerge, by.x=c("County", "Year"), by.y=c("County", "year"), all=TRUE)
+jul <- jul%>%
+  select(-County1,-County2)
 
-colnames(augdf) <- c("Year","County","NumTempDays90", "County1", "NumTempDays95", "County2", "NumTempDays99")
+colnames(augdf) <- c("Year","County","augtempDays90", "County1", "augtempDays95", "County2", "augtempDays99")
 aug <- merge(augdf,meanMerge, by.x=c("County", "Year"), by.y=c("County", "year"), all=TRUE)
+aug <- aug%>%
+  select(-County1,-County2)
 
-colnames(sepdf) <- c("Year","County","NumTempDays90", "County1", "NumTempDays95", "County2", "NumTempDays99")
+colnames(sepdf) <- c("Year","County","septempDays90", "County1", "septempDays95", "County2", "septempDays99")
 sep <- merge(sepdf,meanMerge, by.x=c("County", "Year"), by.y=c("County", "year"), all=TRUE)
+sep <- sep%>%
+  select(-County1,-County2)
 
-colnames(octdf) <- c("Year","County","NumTempDays90", "County1", "NumTempDays95", "County2", "NumTempDays99")
+colnames(octdf) <- c("Year","County","octtempDays90", "County1", "octtempDays95", "County2", "octtempDays99")
 oct <- merge(octdf,meanMerge, by.x=c("County", "Year"), by.y=c("County", "year"), all=TRUE)
+oct <- oct%>%
+  select(-County1,-County2)
 
 #write.csv(may, "data/Num_maytemp_Extreme_Days.csv")
 #write.csv(jun, "data/Num_juntemp_Extreme_Days.csv")
