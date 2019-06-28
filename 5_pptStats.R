@@ -255,40 +255,40 @@ for(n in 1981:2017){
 
 colnames(maydf) <- c("Year","County","maypptDays90", "County1", "maypptDays95", "County2", "maypptDays99")
 may <- merge(maydf,meanMerge, by.x=c("County", "Year"), by.y=c("County", "year"), all=TRUE)
-may <- may%>%
+mayppt <- may%>%
   select(-County1,-County2)
 
 colnames(jundf) <- c("Year","County","junpptDays90", "County1", "junpptDays95", "County2", "junpptDays99")
 jun <- merge(jundf,meanMerge, by.x=c("County", "Year"), by.y=c("County", "year"), all=TRUE)
-jun <- jun%>%
+junppt <- jun%>%
   select(-County1,-County2)
 
 colnames(juldf) <- c("Year","County","julpptDays90", "County1", "julpptDays95", "County2", "julpptDays99")
 jul <- merge(juldf,meanMerge, by.x=c("County", "Year"), by.y=c("County", "year"), all=TRUE)
-jul <- jul%>%
+julppt <- jul%>%
   select(-County1,-County2)
 
 colnames(augdf) <- c("Year","County","augpptDays90", "County1", "augpptDays95", "County2", "augpptDays99")
 aug <- merge(augdf,meanMerge, by.x=c("County", "Year"), by.y=c("County", "year"), all=TRUE)
-aug <- aug%>%
+augppt <- aug%>%
   select(-County1,-County2)
 
 colnames(sepdf) <- c("Year","County","seppptDays90", "County1", "seppptDays95", "County2", "seppptDays99")
 sep <- merge(sepdf,meanMerge, by.x=c("County", "Year"), by.y=c("County", "year"), all=TRUE)
-sep <- sep%>%
+sepppt <- sep%>%
   select(-County1,-County2)
 
 colnames(octdf) <- c("Year","County","octpptDays90", "County1", "octpptDays95", "County2", "octpptDays99")
 oct <- merge(octdf,meanMerge, by.x=c("County", "Year"), by.y=c("County", "year"), all=TRUE)
-oct <- oct%>%
+octppt <- oct%>%
   select(-County1,-County2)
 
-write.csv(may, "data/Num_mayppt_Extreme_Days.csv")
-write.csv(jun, "data/Num_junppt_Extreme_Days.csv")
-write.csv(jul, "data/Num_julppt_Extreme_Days.csv")
-write.csv(aug, "data/Num_augppt_Extreme_Days.csv")
-write.csv(sep, "data/Num_sepppt_Extreme_Days.csv")
-write.csv(oct, "data/Num_octppt_Extreme_Days.csv")
+write.csv(mayppt, "data/Num_mayppt_Extreme_Days.csv")
+write.csv(junppt, "data/Num_junppt_Extreme_Days.csv")
+write.csv(julppt, "data/Num_julppt_Extreme_Days.csv")
+write.csv(augppt, "data/Num_augppt_Extreme_Days.csv")
+write.csv(sepppt, "data/Num_sepppt_Extreme_Days.csv")
+write.csv(octppt, "data/Num_octppt_Extreme_Days.csv")
 
 # Do we need this?
 #dfSpread <- spread(outdf, County, NumDays)
