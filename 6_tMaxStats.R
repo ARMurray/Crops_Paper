@@ -42,6 +42,8 @@ tempaverage2 <- tempaverage %>%
 meanMerge <- merge(tempaverage, tempaverage1, by="County", all=TRUE)
 meanMerge <- merge(meanMerge, tempaverage2, by="County", all=TRUE)
 meanMerge$Anomaly <- ((meanMerge$meantemp-meanMerge$Average)/meanMerge$sd)
+colnames(meanMerge) = c("County", "year", "AnnualMeanTemp", "AllTimeAvgTemp", "Tempsd", "TempAnomaly")
+
 
 #Create Monthly Subsets
 

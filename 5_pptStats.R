@@ -39,6 +39,8 @@ pptaverage2 <- pptaverage %>%
 meanMerge <- merge(pptaverage, pptaverage1, by="County", all=TRUE)
 meanMerge <- merge(meanMerge, pptaverage2, by="County", all=TRUE)
 meanMerge$Anomaly <- ((meanMerge$sumppt-meanMerge$Average)/meanMerge$sd)
+colnames(meanMerge) = c("County", "year", "AnnualSumppt", "AllTimeAvgppt", "pptsd", "pptAnomaly")
+
 
 #Create Monthly Subsets
 
