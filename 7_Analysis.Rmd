@@ -204,9 +204,9 @@ peanuts$YieldPercentChange <- ((peanuts$Value - peanuts$predicted)/peanuts$predi
 #Run ANOVA statistics and Plot
 ```{r}
 
-p <- ggboxplot(soybeans, x = "GSTempCategories", y = "YieldPercentChange",
-               color = "GSpptCategories", palette =c("#FC4E07", "#00AFBB", "#E7B800"),
-             add = "jitter", shape = "GSpptCategories",order = c("Below Normal", "Near Normal", "Above Normal"))
+p <- ggboxplot(cotton, x = "GSTempCategories", y = "YieldPercentChange",
+               color = "GSpptCategories", add="jitter", palette =c("#FC4E07", "#00AFBB", "#E7B800"),
+             shape = "GSpptCategories",order = c("Below Normal", "Near Normal", "Above Normal"))
 
 p
 
@@ -215,7 +215,7 @@ p2 <- ggpar(p,
             title = "",
             subtitle = "",
             caption = "",
-            xlab ="Growing Season Maximum Temperatures", 
+            xlab ="Growing Season Maximum Temperature", 
             ylab = "Yield Percent Difference",
             legend.title = "Growing Season Precipitation")
 p2
@@ -225,7 +225,7 @@ p2 + facet_wrap(. ~ State)
 
 
 
-q <- ggviolin(soybeans, x = "GSTempCategories", y = "YieldPercentChange",
+q <- ggviolin(peanuts, x = "GSTempCategories", y = "YieldPercentChange",
                fill = "GSTempCategories", palette =c("#FC4E07", "#00AFBB", "#E7B800"), shape = "GSTempCategories",
          add = "boxplot", add.params = list(fill = "white"), order = c("Below Normal", "Near Normal", "Above Normal"))
 
@@ -235,14 +235,14 @@ q2 <- ggpar(q,
             title = "",
             subtitle = "",
             caption = "",
-            xlab ="Growing Season Maximum Temperatures", 
+            xlab ="Growing Season Temperature", 
             ylab = "Yield Percent Difference",
             legend.title = "Growing Season Temperature")
 q2
 
-q3 <- q2 + facet_wrap(. ~ State)
+q3 <- q2 + facet_wrap(. ~ State, nrow = 1)
 
-q3 + stat_compare_means(method = "anova", label = "p.format", label.y = 125) + stat_compare_means(label = "p.signif", method = "t.test", ref.group = "Near Normal")  
+q3 + stat_compare_means(method = "anova", label = "p.format", label.y = 125) + stat_compare_means(label = "p.signif", method = "t.test", ref.group = "Near Normal", label.y = 75)  
 ```
 
 
