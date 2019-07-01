@@ -45,14 +45,14 @@ library(lme4)
 
 ```{r data_import}
 crops <- read.csv(here("data","FinalCrops2.csv"))
-ppt <- read.csv(here("data","ppt_temp_combined.csv"))
+ppt <- read.csv(here("data","ppt_temp_combined2.csv"))
+ppt$join <- paste0(ppt$County,ppt$Year)
 
 ```
 
 ## Add join fields and Create "Above Normal", "Below Normal", "Near Normal Categories" for Growing Season
 
 ```{r joinCreate}
-ppt$join <- paste0(ppt$County,ppt$Year)
 
 ppt$GSpptCategories <- ifelse(ppt$pptAnomaly >= -0.5 & ppt$pptAnomaly <= 0.5, "Near Normal", ifelse(ppt$pptAnomaly > 0.5, "Above Normal", ifelse(ppt$pptAnomaly < -0.5, "Below Normal", NA)))
 
@@ -208,42 +208,42 @@ corfun<-function(x, y) {
   corr=(cor.test(x, y, method="pearson"))
 }
 
-cornpptcorr <- ddply(corn, .(FIPS), summarise,corr=corfun(AnnualSumppt, YieldPercentChange)$estimate,
-      pval=corfun(AnnualSumppt, YieldPercentChange)$p.value) 
-corntempcorr <- ddply(corn, .(FIPS), summarise,corr=corfun(AnnualMeanTemp, YieldPercentChange)$estimate,
-      pval=corfun(AnnualSumppt, YieldPercentChange)$p.value) 
+cornpptcorr <- ddply(corn, .(FIPS), summarise,corr=corfun(GrowingSeasonAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(GrowingSeasonAnomaly, YieldPercentChange)$p.value) 
+corntempcorr <- ddply(corn, .(FIPS), summarise,corr=corfun(GrowingSeasonTempAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(GrowingSeasonTempAnomaly, YieldPercentChange)$p.value) 
 
-cottonpptcorr <- ddply(cotton, .(FIPS), summarise,corr=corfun(AnnualSumppt, YieldPercentChange)$estimate,
-      pval=corfun(AnnualSumppt, YieldPercentChange)$p.value) 
-cottontempcorr <- ddply(cotton, .(FIPS), summarise,corr=corfun(AnnualMeanTemp, YieldPercentChange)$estimate,
-      pval=corfun(AnnualSumppt, YieldPercentChange)$p.value) 
+cottonpptcorr <- ddply(cotton, .(FIPS), summarise,corr=corfun(GrowingSeasonAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(GrowingSeasonAnomaly, YieldPercentChange)$p.value) 
+cottontempcorr <- ddply(cotton, .(FIPS), summarise,corr=corfun(GrowingSeasonTempAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(GrowingSeasonTempAnomaly, YieldPercentChange)$p.value) 
 
-peanutspptcorr <- ddply(peanuts, .(FIPS), summarise,corr=corfun(AnnualSumppt, YieldPercentChange)$estimate,
-      pval=corfun(AnnualSumppt, YieldPercentChange)$p.value) 
-peanutstempcorr <- ddply(peanuts, .(FIPS), summarise,corr=corfun(AnnualMeanTemp, YieldPercentChange)$estimate,
-      pval=corfun(AnnualSumppt, YieldPercentChange)$p.value) 
+peanutspptcorr <- ddply(peanuts, .(FIPS), summarise,corr=corfun(GrowingSeasonAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(GrowingSeasonAnomaly, YieldPercentChange)$p.value) 
+peanutstempcorr <- ddply(peanuts, .(FIPS), summarise,corr=corfun(GrowingSeasonTempAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(GrowingSeasonTempAnomaly, YieldPercentChange)$p.value) 
 
-soybeanspptcorr <- ddply(soybeans, .(FIPS), summarise,corr=corfun(AnnualSumppt, YieldPercentChange)$estimate,
-      pval=corfun(AnnualSumppt, YieldPercentChange)$p.value) 
-soybeanstempcorr <- ddply(soybeans, .(FIPS), summarise,corr=corfun(AnnualMeanTemp, YieldPercentChange)$estimate,
-      pval=corfun(AnnualSumppt, YieldPercentChange)$p.value) 
+soybeanspptcorr <- ddply(soybeans, .(FIPS), summarise,corr=corfun(GrowingSeasonAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(GrowingSeasonAnomaly, YieldPercentChange)$p.value) 
+soybeanstempcorr <- ddply(soybeans, .(FIPS), summarise,corr=corfun(GrowingSeasonTempAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(GrowingSeasonTempAnomaly, YieldPercentChange)$p.value) 
 
-sweetPotatoespptcorr <- ddply(sweetPotatoes, .(FIPS), summarise,corr=corfun(AnnualSumppt, YieldPercentChange)$estimate,
-      pval=corfun(AnnualSumppt, YieldPercentChange)$p.value) 
-sweetPotatoestempcorr <- ddply(sweetPotatoes, .(FIPS), summarise,corr=corfun(AnnualMeanTemp, YieldPercentChange)$estimate,
-      pval=corfun(AnnualSumppt, YieldPercentChange)$p.value) 
+sweetPotatoespptcorr <- ddply(sweetPotatoes, .(FIPS), summarise,corr=corfun(GrowingSeasonAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(GrowingSeasonAnomaly, YieldPercentChange)$p.value) 
+sweetPotatoestempcorr <- ddply(sweetPotatoes, .(FIPS), summarise,corr=corfun(GrowingSeasonTempAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(GrowingSeasonTempAnomaly, YieldPercentChange)$p.value) 
 
-write.csv(cornpptcorr, "cornpptcorrelations.csv")
-write.csv(cottonpptcorr, "cottonpptcorrelations.csv")
-write.csv(peanutspptcorr, "peanutspptcorrelations.csv")
-write.csv(soybeanspptcorr, "soybeanspptcorrelations.csv")
-write.csv(sweetPotatoespptcorr, "sweetPotatoespptcorrelations.csv")
+#write.csv(cornpptcorr, "cornpptcorrelations.csv")
+#write.csv(cottonpptcorr, "cottonpptcorrelations.csv")
+#write.csv(peanutspptcorr, "peanutspptcorrelations.csv")
+#write.csv(soybeanspptcorr, "soybeanspptcorrelations.csv")
+#write.csv(sweetPotatoespptcorr, "sweetPotatoespptcorrelations.csv")
 
-write.csv(corntempcorr, "corntempcorrelations.csv")
-write.csv(cottontempcorr, "cottontempcorrelations.csv")
-write.csv(peanutstempcorr, "peanutstempcorrelations.csv")
-write.csv(soybeanstempcorr, "soybeanstempcorrelations.csv")
-write.csv(sweetPotatoestempcorr, "sweetPotatoestempcorrelations.csv")
+#write.csv(corntempcorr, "corntempcorrelations.csv")
+#write.csv(cottontempcorr, "cottontempcorrelations.csv")
+#write.csv(peanutstempcorr, "peanutstempcorrelations.csv")
+#write.csv(soybeanstempcorr, "soybeanstempcorrelations.csv")
+#write.csv(sweetPotatoestempcorr, "sweetPotatoestempcorrelations.csv")
 
 
 ```

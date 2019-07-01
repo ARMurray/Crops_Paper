@@ -401,7 +401,7 @@ pptfinal <- merge(pptfinal,octdf, by.x=c("County", "Year"), by.y=c("County", "Ye
 pptfinal <- merge(pptfinal,meanMerge, by.x=c("County", "Year"), by.y=c("County", "year"), all=TRUE)
 pptfinal <- merge(pptfinal,monthsums, by.x=c("County", "Year"), by.y=c("County", "year"), all=TRUE)
 
-write.csv(pptfinal, "data/Num_ppt_Extreme_Days2.csv")
+#write.csv(pptfinal, "data/Num_ppt_Extreme_Days2.csv")
 
 # Do we need this?
 #dfSpread <- spread(outdf, County, NumDays)

@@ -42,7 +42,7 @@ tempaverage2 <- tempaverage %>%
 meanMerge <- merge(tempaverage, tempaverage1, by="County", all=TRUE)
 meanMerge <- merge(meanMerge, tempaverage2, by="County", all=TRUE)
 meanMerge$Anomaly <- ((meanMerge$meantemp-meanMerge$Average)/meanMerge$sd)
-colnames(meanMerge) = c("County", "year", "AnnualMeanTemp", "AllTimeAvgTemp", "Tempsd", "TempAnomaly")
+colnames(meanMerge) = c("County", "year", "GrowingSeasonMeanTemp", "GrowingSeasonAvgTemp", "GrowingSeasonTempsd", "GrowingSeasonTempAnomaly")
 
 
 #Create Monthly Subsets
@@ -50,20 +50,136 @@ colnames(meanMerge) = c("County", "year", "AnnualMeanTemp", "AllTimeAvgTemp", "T
 maytemp  <- tempFlip %>%
   filter(month == "5")
 
+tempaveragemay <- maytemp %>%
+  group_by(County, year) %>%
+  summarize(meantemp = mean(temp))
+
+tempaverage1may <- tempaveragemay %>%
+  group_by(County) %>%
+  summarize(Average = mean(meantemp))
+
+tempaverage2may <- tempaveragemay %>%
+  group_by(County) %>%
+  summarize(sd = sd(meantemp))
+
+meanMergemay <- merge(tempaveragemay, tempaverage1may, by="County", all=TRUE)
+meanMergemay <- merge(meanMergemay, tempaverage2may, by="County", all=TRUE)
+meanMergemay$Anomaly <- ((meanMergemay$meantemp-meanMergemay$Average)/meanMergemay$sd)
+colnames(meanMergemay) = c("County", "year", "maymeantemp", "mayAvgtemp", "maytempsd", "maytempAnomaly")
+
+
+
 juntemp<- tempFlip %>%
   filter(month == "6")
+
+tempaveragejun <- juntemp %>%
+  group_by(County, year) %>%
+  summarize(meantemp = mean(temp))
+
+tempaverage1jun <- tempaveragejun %>%
+  group_by(County) %>%
+  summarize(Average = mean(meantemp))
+
+tempaverage2jun <- tempaveragejun %>%
+  group_by(County) %>%
+  summarize(sd = sd(meantemp))
+
+meanMergejun <- merge(tempaveragejun, tempaverage1jun, by="County", all=TRUE)
+meanMergejun <- merge(meanMergejun, tempaverage2jun, by="County", all=TRUE)
+meanMergejun$Anomaly <- ((meanMergejun$meantemp-meanMergejun$Average)/meanMergejun$sd)
+colnames(meanMergejun) = c("County", "year", "junmeantemp", "junAvgtemp", "juntempsd", "juntempAnomaly")
+
+
 
 jultemp <- tempFlip %>%
   filter(month == "7")
 
+tempaveragejul <- jultemp %>%
+  group_by(County, year) %>%
+  summarize(meantemp = mean(temp))
+
+tempaverage1jul <- tempaveragejul %>%
+  group_by(County) %>%
+  summarize(Average = mean(meantemp))
+
+tempaverage2jul <- tempaveragejul %>%
+  group_by(County) %>%
+  summarize(sd = sd(meantemp))
+
+meanMergejul <- merge(tempaveragejul, tempaverage1jul, by="County", all=TRUE)
+meanMergejul <- merge(meanMergejul, tempaverage2jul, by="County", all=TRUE)
+meanMergejul$Anomaly <- ((meanMergejul$meantemp-meanMergejul$Average)/meanMergejul$sd)
+colnames(meanMergejul) = c("County", "year", "julmeantemp", "julAvgtemp", "jultempsd", "jultempAnomaly")
+
+
+
 augtemp <- tempFlip %>%
   filter(month == "8")
+
+tempaverageaug <- augtemp %>%
+  group_by(County, year) %>%
+  summarize(meantemp = mean(temp))
+
+tempaverage1aug <- tempaverageaug %>%
+  group_by(County) %>%
+  summarize(Average = mean(meantemp))
+
+tempaverage2aug <- tempaverageaug %>%
+  group_by(County) %>%
+  summarize(sd = sd(meantemp))
+
+meanMergeaug <- merge(tempaverageaug, tempaverage1aug, by="County", all=TRUE)
+meanMergeaug <- merge(meanMergeaug, tempaverage2aug, by="County", all=TRUE)
+meanMergeaug$Anomaly <- ((meanMergeaug$meantemp-meanMergeaug$Average)/meanMergeaug$sd)
+colnames(meanMergeaug) = c("County", "year", "augmeantemp", "augAvgtemp", "augtempsd", "augtempAnomaly")
+
+
 
 septemp <- tempFlip %>%
   filter(month == "9")
 
+tempaveragesep <- septemp %>%
+  group_by(County, year) %>%
+  summarize(meantemp = mean(temp))
+
+tempaverage1sep <- tempaveragesep %>%
+  group_by(County) %>%
+  summarize(Average = mean(meantemp))
+
+tempaverage2sep <- tempaveragesep %>%
+  group_by(County) %>%
+  summarize(sd = sd(meantemp))
+
+meanMergesep <- merge(tempaveragesep, tempaverage1sep, by="County", all=TRUE)
+meanMergesep <- merge(meanMergesep, tempaverage2sep, by="County", all=TRUE)
+meanMergesep$Anomaly <- ((meanMergesep$meantemp-meanMergesep$Average)/meanMergesep$sd)
+colnames(meanMergesep) = c("County", "year", "sepmeantemp", "sepAvgtemp", "septempsd", "septempAnomaly")
+
 octtemp <- tempFlip %>%
   filter(month == "10")
+
+tempaverageoct <- octtemp %>%
+  group_by(County, year) %>%
+  summarize(meantemp = mean(temp))
+
+tempaverage1oct <- tempaverageoct %>%
+  group_by(County) %>%
+  summarize(Average = mean(meantemp))
+
+tempaverage2oct <- tempaverageoct %>%
+  group_by(County) %>%
+  summarize(sd = sd(meantemp))
+
+meanMergeoct <- merge(tempaverageoct, tempaverage1oct, by="County", all=TRUE)
+meanMergeoct <- merge(meanMergeoct, tempaverage2oct, by="County", all=TRUE)
+meanMergeoct$Anomaly <- ((meanMergeoct$meantemp-meanMergeoct$Average)/meanMergeoct$sd)
+colnames(meanMergeoct) = c("County", "year", "octmeantemp", "octAvgtemp", "octtempsd", "octtempAnomaly")
+
+monthmean <- merge(meanMergemay,meanMergejun, by.x=c("County", "year"), by.y=c("County", "year"), all=TRUE)
+monthmean <- merge(monthmean,meanMergejul, by.x=c("County", "year"), by.y=c("County", "year"), all=TRUE)
+monthmean <- merge(monthmean,meanMergeaug, by.x=c("County", "year"), by.y=c("County", "year"), all=TRUE)
+monthmean <- merge(monthmean,meanMergesep, by.x=c("County", "year"), by.y=c("County", "year"), all=TRUE)
+monthmean <- merge(monthmean,meanMergeoct, by.x=c("County", "year"), by.y=c("County", "year"), all=TRUE)
 
 # Calculate Daily Mean by County for entire time period
 #meantemp <- summarize(grpCounty, meantemp = mean(temp))
@@ -283,11 +399,13 @@ tempfinal <- merge(tempfinal,augdf, by.x=c("County", "Year"), by.y=c("County", "
 tempfinal <- merge(tempfinal,sepdf, by.x=c("County", "Year"), by.y=c("County", "Year"), all=TRUE)
 tempfinal <- merge(tempfinal,octdf, by.x=c("County", "Year"), by.y=c("County", "Year"), all=TRUE)
 tempfinal <- merge(tempfinal,meanMerge, by.x=c("County", "Year"), by.y=c("County", "year"), all=TRUE)
+tempfinal <- merge(tempfinal,monthmean, by.x=c("County", "Year"), by.y=c("County", "year"), all=TRUE)
+
 
 #Merge PPT and Temp Final 
 COMBO <- merge(tempfinal,pptfinal, by.x=c("County", "Year"), by.y=c("County", "Year"), all=TRUE)
 
-#write.csv(COMBO, "data/ppt_temp_combined.csv")
+#write.csv(COMBO, "data/ppt_temp_combined2.csv")
 #write.csv(tempfinal, "data/Num_temp_Extreme_Days.csv")
 
 #Do we really need this?
