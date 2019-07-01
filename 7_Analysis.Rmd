@@ -31,6 +31,7 @@ While USDA crop data is available back into the early nineteen hundreds, we util
 knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
 library(ggplot2)
+library(plyr)
 library(tidyr)
 library(sf)
 library(miceadds)
@@ -200,6 +201,54 @@ peanuts$residuals <- residuals(fit)
 peanuts$YieldPercentChange <- ((peanuts$Value - peanuts$predicted)/peanuts$predicted)*100
 
 ```
+
+#RUN CORRELATIONS on Growing Season PPT and Temps on Yield Percent Change
+```{r}
+corfun<-function(x, y) {
+  corr=(cor.test(x, y, method="pearson"))
+}
+
+cornpptcorr <- ddply(corn, .(FIPS), summarise,corr=corfun(AnnualSumppt, YieldPercentChange)$estimate,
+      pval=corfun(AnnualSumppt, YieldPercentChange)$p.value) 
+corntempcorr <- ddply(corn, .(FIPS), summarise,corr=corfun(AnnualMeanTemp, YieldPercentChange)$estimate,
+      pval=corfun(AnnualSumppt, YieldPercentChange)$p.value) 
+
+cottonpptcorr <- ddply(cotton, .(FIPS), summarise,corr=corfun(AnnualSumppt, YieldPercentChange)$estimate,
+      pval=corfun(AnnualSumppt, YieldPercentChange)$p.value) 
+cottontempcorr <- ddply(cotton, .(FIPS), summarise,corr=corfun(AnnualMeanTemp, YieldPercentChange)$estimate,
+      pval=corfun(AnnualSumppt, YieldPercentChange)$p.value) 
+
+peanutspptcorr <- ddply(peanuts, .(FIPS), summarise,corr=corfun(AnnualSumppt, YieldPercentChange)$estimate,
+      pval=corfun(AnnualSumppt, YieldPercentChange)$p.value) 
+peanutstempcorr <- ddply(peanuts, .(FIPS), summarise,corr=corfun(AnnualMeanTemp, YieldPercentChange)$estimate,
+      pval=corfun(AnnualSumppt, YieldPercentChange)$p.value) 
+
+soybeanspptcorr <- ddply(soybeans, .(FIPS), summarise,corr=corfun(AnnualSumppt, YieldPercentChange)$estimate,
+      pval=corfun(AnnualSumppt, YieldPercentChange)$p.value) 
+soybeanstempcorr <- ddply(soybeans, .(FIPS), summarise,corr=corfun(AnnualMeanTemp, YieldPercentChange)$estimate,
+      pval=corfun(AnnualSumppt, YieldPercentChange)$p.value) 
+
+sweetPotatoespptcorr <- ddply(sweetPotatoes, .(FIPS), summarise,corr=corfun(AnnualSumppt, YieldPercentChange)$estimate,
+      pval=corfun(AnnualSumppt, YieldPercentChange)$p.value) 
+sweetPotatoestempcorr <- ddply(sweetPotatoes, .(FIPS), summarise,corr=corfun(AnnualMeanTemp, YieldPercentChange)$estimate,
+      pval=corfun(AnnualSumppt, YieldPercentChange)$p.value) 
+
+write.csv(cornpptcorr, "cornpptcorrelations.csv")
+write.csv(cottonpptcorr, "cottonpptcorrelations.csv")
+write.csv(peanutspptcorr, "peanutspptcorrelations.csv")
+write.csv(soybeanspptcorr, "soybeanspptcorrelations.csv")
+write.csv(sweetPotatoespptcorr, "sweetPotatoespptcorrelations.csv")
+
+write.csv(corntempcorr, "corntempcorrelations.csv")
+write.csv(cottontempcorr, "cottontempcorrelations.csv")
+write.csv(peanutstempcorr, "peanutstempcorrelations.csv")
+write.csv(soybeanstempcorr, "soybeanstempcorrelations.csv")
+write.csv(sweetPotatoestempcorr, "sweetPotatoestempcorrelations.csv")
+
+
+```
+
+
 
 #Run ANOVA statistics and Plot
 ```{r}
