@@ -39,7 +39,7 @@ pptaverage2 <- pptaverage %>%
 meanMerge <- merge(pptaverage, pptaverage1, by="County", all=TRUE)
 meanMerge <- merge(meanMerge, pptaverage2, by="County", all=TRUE)
 meanMerge$Anomaly <- ((meanMerge$sumppt-meanMerge$Average)/meanMerge$sd)
-colnames(meanMerge) = c("County", "year", "AnnualSumppt", "AllTimeAvgppt", "pptsd", "pptAnomaly")
+colnames(meanMerge) = c("County", "year", "GrowsingSeasonSumppt", "GrowingSeasonAvgppt", "GrowingSeasonpptsd", "GrowingSeasonAnomaly")
 
 
 #Create Monthly Subsets
@@ -47,20 +47,136 @@ colnames(meanMerge) = c("County", "year", "AnnualSumppt", "AllTimeAvgppt", "ppts
 mayppt  <- pptFlip %>%
   filter(month == "5")
 
+pptaveragemay <- mayppt %>%
+  group_by(County, year) %>%
+  summarize(sumppt = sum(ppt))
+
+pptaverage1may <- pptaveragemay %>%
+  group_by(County) %>%
+  summarize(Average = mean(sumppt))
+
+pptaverage2may <- pptaveragemay %>%
+  group_by(County) %>%
+  summarize(sd = sd(sumppt))
+
+meanMergemay <- merge(pptaveragemay, pptaverage1may, by="County", all=TRUE)
+meanMergemay <- merge(meanMergemay, pptaverage2may, by="County", all=TRUE)
+meanMergemay$Anomaly <- ((meanMergemay$sumppt-meanMergemay$Average)/meanMergemay$sd)
+colnames(meanMergemay) = c("County", "year", "maySumppt", "mayAvgppt", "maypptsd", "maypptAnomaly")
+
+
+
 junppt<- pptFlip %>%
   filter(month == "6")
+
+pptaveragejun <- junppt %>%
+  group_by(County, year) %>%
+  summarize(sumppt = sum(ppt))
+
+pptaverage1jun <- pptaveragejun %>%
+  group_by(County) %>%
+  summarize(Average = mean(sumppt))
+
+pptaverage2jun <- pptaveragejun %>%
+  group_by(County) %>%
+  summarize(sd = sd(sumppt))
+
+meanMergejun <- merge(pptaveragejun, pptaverage1jun, by="County", all=TRUE)
+meanMergejun <- merge(meanMergejun, pptaverage2jun, by="County", all=TRUE)
+meanMergejun$Anomaly <- ((meanMergejun$sumppt-meanMergejun$Average)/meanMergejun$sd)
+colnames(meanMergejun) = c("County", "year", "junSumppt", "junAvgppt", "junpptsd", "junpptAnomaly")
+
+
 
 julppt <- pptFlip %>%
   filter(month == "7")
 
+pptaveragejul <- julppt %>%
+  group_by(County, year) %>%
+  summarize(sumppt = sum(ppt))
+
+pptaverage1jul <- pptaveragejul %>%
+  group_by(County) %>%
+  summarize(Average = mean(sumppt))
+
+pptaverage2jul <- pptaveragejul %>%
+  group_by(County) %>%
+  summarize(sd = sd(sumppt))
+
+meanMergejul <- merge(pptaveragejul, pptaverage1jul, by="County", all=TRUE)
+meanMergejul <- merge(meanMergejul, pptaverage2jul, by="County", all=TRUE)
+meanMergejul$Anomaly <- ((meanMergejul$sumppt-meanMergejul$Average)/meanMergejul$sd)
+colnames(meanMergejul) = c("County", "year", "julSumppt", "julAvgppt", "julpptsd", "julpptAnomaly")
+
+
+
 augppt <- pptFlip %>%
   filter(month == "8")
+
+pptaverageaug <- augppt %>%
+  group_by(County, year) %>%
+  summarize(sumppt = sum(ppt))
+
+pptaverage1aug <- pptaverageaug %>%
+  group_by(County) %>%
+  summarize(Average = mean(sumppt))
+
+pptaverage2aug <- pptaverageaug %>%
+  group_by(County) %>%
+  summarize(sd = sd(sumppt))
+
+meanMergeaug <- merge(pptaverageaug, pptaverage1aug, by="County", all=TRUE)
+meanMergeaug <- merge(meanMergeaug, pptaverage2aug, by="County", all=TRUE)
+meanMergeaug$Anomaly <- ((meanMergeaug$sumppt-meanMergeaug$Average)/meanMergeaug$sd)
+colnames(meanMergeaug) = c("County", "year", "augSumppt", "augAvgppt", "augpptsd", "augpptAnomaly")
+
+
 
 sepppt <- pptFlip %>%
   filter(month == "9")
 
+pptaveragesep <- sepppt %>%
+  group_by(County, year) %>%
+  summarize(sumppt = sum(ppt))
+
+pptaverage1sep <- pptaveragesep %>%
+  group_by(County) %>%
+  summarize(Average = mean(sumppt))
+
+pptaverage2sep <- pptaveragesep %>%
+  group_by(County) %>%
+  summarize(sd = sd(sumppt))
+
+meanMergesep <- merge(pptaveragesep, pptaverage1sep, by="County", all=TRUE)
+meanMergesep <- merge(meanMergesep, pptaverage2sep, by="County", all=TRUE)
+meanMergesep$Anomaly <- ((meanMergesep$sumppt-meanMergesep$Average)/meanMergesep$sd)
+colnames(meanMergesep) = c("County", "year", "sepSumppt", "sepAvgppt", "seppptsd", "seppptAnomaly")
+
 octppt <- pptFlip %>%
   filter(month == "10")
+
+pptaverageoct <- octppt %>%
+  group_by(County, year) %>%
+  summarize(sumppt = sum(ppt))
+
+pptaverage1oct <- pptaverageoct %>%
+  group_by(County) %>%
+  summarize(Average = mean(sumppt))
+
+pptaverage2oct <- pptaverageoct %>%
+  group_by(County) %>%
+  summarize(sd = sd(sumppt))
+
+meanMergeoct <- merge(pptaverageoct, pptaverage1oct, by="County", all=TRUE)
+meanMergeoct <- merge(meanMergeoct, pptaverage2oct, by="County", all=TRUE)
+meanMergeoct$Anomaly <- ((meanMergeoct$sumppt-meanMergeoct$Average)/meanMergeoct$sd)
+colnames(meanMergeoct) = c("County", "year", "octSumppt", "octAvgppt", "octpptsd", "octpptAnomaly")
+
+monthsums <- merge(meanMergemay,meanMergejun, by.x=c("County", "year"), by.y=c("County", "year"), all=TRUE)
+monthsums <- merge(monthsums,meanMergejul, by.x=c("County", "year"), by.y=c("County", "year"), all=TRUE)
+monthsums <- merge(monthsums,meanMergeaug, by.x=c("County", "year"), by.y=c("County", "year"), all=TRUE)
+monthsums <- merge(monthsums,meanMergesep, by.x=c("County", "year"), by.y=c("County", "year"), all=TRUE)
+monthsums <- merge(monthsums,meanMergeoct, by.x=c("County", "year"), by.y=c("County", "year"), all=TRUE)
 
 # Calculate Daily Mean by County for entire time period
 #meanPPT <- summarize(grpCounty, meanPPT = mean(ppt))
@@ -283,8 +399,9 @@ pptfinal <- merge(pptfinal,augdf, by.x=c("County", "Year"), by.y=c("County", "Ye
 pptfinal <- merge(pptfinal,sepdf, by.x=c("County", "Year"), by.y=c("County", "Year"), all=TRUE)
 pptfinal <- merge(pptfinal,octdf, by.x=c("County", "Year"), by.y=c("County", "Year"), all=TRUE)
 pptfinal <- merge(pptfinal,meanMerge, by.x=c("County", "Year"), by.y=c("County", "year"), all=TRUE)
+pptfinal <- merge(pptfinal,monthsums, by.x=c("County", "Year"), by.y=c("County", "year"), all=TRUE)
 
-#write.csv(pptfinal, "data/Num_ppt_Extreme_Days.csv")
+write.csv(pptfinal, "data/Num_ppt_Extreme_Days2.csv")
 
 # Do we need this?
 #dfSpread <- spread(outdf, County, NumDays)
