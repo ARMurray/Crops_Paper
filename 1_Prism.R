@@ -14,9 +14,7 @@ library(ggplot2)
 
 #list <- paste0("~/Documents/Geog_803/prism/",list.files(path = "~/Documents/Geog_803/prism/", pattern = '.bil$', recursive = TRUE))
 
-#US_Counties <- st_read("~/Documents/Geog_803/shapefiles/US_county_2010.shp")
-
-#SE_Counties <- US_Counties%>%
+#SE_Counties <- st_read("~/Documents/Geog_803/shapefiles/US_county_2010.shp")%>%
 #  dplyr::filter(STATEFP10 == "37"| STATEFP10 == "13"| STATEFP10 == "45"| STATEFP10 == "51")
 
 # Get CRS code table
@@ -38,7 +36,6 @@ library(ggplot2)
 #  filename <- list[n]
 #  prism <- raster(filename)
 #  year <- substr(list[n],51,54)
-#  object <- paste0("prism_ppt_",year)
   
   #Calculate the mean ppt for each county
 #  rastVals <- raster::extract(prism, Counties)
@@ -51,9 +48,9 @@ library(ggplot2)
 #*********************************************************************
 #************BEGIN HERE TO FORMAT TABLES******************
 
-US_Counties <- st_read("~/Documents/Geog_803/shapefiles/US_county_2010.shp")
-
-SE_Counties <- US_Counties%>%
+# Run this if you skipped the previous section to create the spatial data,
+# Otherwise you can skip it but it won't matter if you run it again
+SE_Counties <- st_read("~/Documents/Geog_803/shapefiles/US_county_2010.shp")%>%
   dplyr::filter(STATEFP10 == "37"| STATEFP10 == "13"| STATEFP10 == "45"| STATEFP10 == "51")
 
 #import previously formatted prism data
