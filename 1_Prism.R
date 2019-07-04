@@ -8,15 +8,15 @@ library(ggplot2)
 # *****THIS CHUNK IS TO DOWNLOAD AND PREPARE DATA AND SHOULD ONLY BE RUN ONCE******
 #       *******************IT TAKES AT LEAST ONE HOUR***********************
 # Download the data
-#get_prism_annual('ppt', years = 1987:2017)
+#get_prism_annual('ppt', years = 1981:2017)
 
 # Get list of Prism files
 
 #list <- paste0("~/Documents/Geog_803/prism/",list.files(path = "~/Documents/Geog_803/prism/", pattern = '.bil$', recursive = TRUE))
 
 #SE_Counties <- st_read("~/Documents/Geog_803/shapefiles/US_county_2010.shp")%>%
-#  dplyr::filter(STATEFP10 == "37"| STATEFP10 == "13"| STATEFP10 == "45"| STATEFP10 == "51")
-
+#counties <- st_read("data/countiesusa/cb_2017_us_county_5m.shp")%>%
+  #filter(STATEFP %in% c(37,45,13))
 # Get CRS code table
 #crs_data = rgdal::make_EPSG()
 #View(crs_data)
@@ -50,12 +50,12 @@ library(ggplot2)
 
 # Run this if you skipped the previous section to create the spatial data,
 # Otherwise you can skip it but it won't matter if you run it again
-SE_Counties <- st_read("~/Documents/Geog_803/shapefiles/US_county_2010.shp")%>%
-  dplyr::filter(STATEFP10 == "37"| STATEFP10 == "13"| STATEFP10 == "45"| STATEFP10 == "51")
+counties <- st_read("data/countiesusa/cb_2017_us_county_5m.shp")%>%
+  filter(STATEFP %in% c(37,45,13))
 
 #import previously formatted prism data
 outData <- read.csv("INSERT PATH TO COUNTY ppt Totals csv HERE")
-colnames(outData) <- c("OID","County","ST_Fips","CO_Fips",1987:2017)
+colnames(outData) <- c("OID","County","ST_Fips","CO_Fips",1981:2017)
 
 # Add leading zeros to county numbers
 for(r in 1:nrow(outData)){
@@ -80,19 +80,19 @@ table <- outData%>%
 
 # Pick variables to add to table output
 vars <- SE_Counties%>%
-  dplyr::select(STATEFP10,COUNTYFP10,GISJOIN,NAME10)
-vars$key <- paste0(vars$STATEFP10,vars$COUNTYFP10)
+  dplyr::select(STATEFP,COUNTYFP,GISJOIN,NAME)
+vars$key <- paste0(vars$STATEFP,vars$COUNTYFP)
 
 # Join the variables to the ppt data
 Counties <- as.data.frame(SE_Counties)
-Counties$ST_CO <- paste0(Counties$STATEFP10,Counties$COUNTYFP10)
+Counties$ST_CO <- paste0(Counties$STATEFP,Counties$COUNTYFP)
 table <- dplyr::left_join(table, vars, by = 'key')
 
 # Write Table
 write.csv(table, "~/Documents/Geog_803/County_ppt_Avgs_1987_2017.csv")
 
 # Make a plot for total ppt per county by year  
-ggplot(table, aes(x=year,y=ppt,color=STATEFP10))+
+ggplot(table, aes(x=year,y=ppt,color=STATEFP))+
   geom_point()+
   labs(title = "Total Precipitation by County 1987-2017", x = "",y="Total ppt in mm",color="State")+
   scale_color_manual(labels = c("Georgia","North Carolina","South Carolina","Virginia"), values = c("green","#4B9CD3","purple","yellow"))
