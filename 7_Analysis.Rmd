@@ -55,9 +55,13 @@ ppt$join <- paste0(ppt$County,ppt$Year)
 
 ```{r joinCreate}
 
-ppt$GSpptCategories <- ifelse(ppt$GrowingSeasonAnomaly >= -1.0 & ppt$GrowingSeasonAnomaly <= 1.0, "Near Normal", ifelse(ppt$GrowingSeasonAnomaly > 1.0, "Above Normal", ifelse(ppt$GrowingSeasonAnomaly < -1.0, "Below Normal", NA)))
+ppt$GSpptCategories <- ifelse(ppt$GrowingSeasonAnomaly >= -0.5 & ppt$GrowingSeasonAnomaly <= 0.5, "Near Normal", ifelse(ppt$GrowingSeasonAnomaly > 0.5, "Above Normal", ifelse(ppt$GrowingSeasonAnomaly < -0.5, "Below Normal", NA)))
 
-ppt$GSTempCategories <- ifelse(ppt$GrowingSeasonTempAnomaly >= -1.0 & ppt$GrowingSeasonTempAnomaly <= 1.0, "Near Normal", ifelse(ppt$GrowingSeasonTempAnomaly > 1.0, "Above Normal", ifelse(ppt$GrowingSeasonTempAnomaly < -1.0, "Below Normal", NA)))
+ppt$GSTempCategories <- ifelse(ppt$GrowingSeasonTempAnomaly >= -0.5 & ppt$GrowingSeasonTempAnomaly <= 0.5, "Near Normal", ifelse(ppt$GrowingSeasonTempAnomaly > 0.5, "Above Normal", ifelse(ppt$GrowingSeasonTempAnomaly < -0.5, "Below Normal", NA)))
+
+ppt$GSpptCategories_f = factor(ppt$GSpptCategories, levels=c('Below Normal','Near Normal','Above Normal'))
+
+ppt$GSTempCategories_f = factor(ppt$GSTempCategories, levels=c('Below Normal','Near Normal','Above Normal'))
 
 ```
 
@@ -198,6 +202,7 @@ peanuts$predicted <- predict(fit)
 peanuts$residuals <- residuals(fit)
 peanuts$YieldPercentChange <- ((peanuts$Value - peanuts$predicted)/peanuts$predicted)*100
 
+
 ```
 
 #RUN CORRELATIONS on Growing Season PPT and Temps on Yield Percent Change
@@ -206,30 +211,195 @@ corfun<-function(x, y) {
   corr=(cor.test(x, y, method="pearson"))
 }
 
-cornpptcorr <- ddply(corn, .(State), summarise,corr=corfun(GrowingSeasonpptAnomaly, YieldPercentChange)$estimate,
-      pval=corfun(GrowingSeasonpptAnomaly, YieldPercentChange)$p.value) 
-corntempcorr <- ddply(corn, .(State), summarise,corr=corfun(GrowingSeasontempAnomaly, YieldPercentChange)$estimate,
-      pval=corfun(GrowingSeasontempAnomaly, YieldPercentChange)$p.value) 
+#GrowingSeason
+cornpptcorr <- ddply(corn, .(FIPS), summarise,corr=corfun(GrowingSeasonAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(GrowingSeasonAnomaly, YieldPercentChange)$p.value) 
+corntempcorr <- ddply(corn, .(FIPS), summarise,corr=corfun(GrowingSeasonTempAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(GrowingSeasonTempAnomaly, YieldPercentChange)$p.value) 
 
-cottonpptcorr <- ddply(cotton, .(State), summarise,corr=corfun(GrowingSeasonpptAnomaly, YieldPercentChange)$estimate,
-      pval=corfun(GrowingSeasonpptAnomaly, YieldPercentChange)$p.value) 
-cottontempcorr <- ddply(cotton, .(State), summarise,corr=corfun(GrowingSeasontempAnomaly, YieldPercentChange)$estimate,
-      pval=corfun(GrowingSeasontempAnomaly, YieldPercentChange)$p.value) 
+cottonpptcorr <- ddply(cotton, .(FIPS), summarise,corr=corfun(GrowingSeasonAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(GrowingSeasonAnomaly, YieldPercentChange)$p.value) 
+cottontempcorr <- ddply(cotton, .(FIPS), summarise,corr=corfun(GrowingSeasonTempAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(GrowingSeasonTempAnomaly, YieldPercentChange)$p.value) 
 
-peanutspptcorr <- ddply(peanuts, .(State), summarise,corr=corfun(GrowingSeasonpptAnomaly, YieldPercentChange)$estimate,
-      pval=corfun(GrowingSeasonpptAnomaly, YieldPercentChange)$p.value) 
-peanutstempcorr <- ddply(peanuts, .(State), summarise,corr=corfun(GrowingSeasontempAnomaly, YieldPercentChange)$estimate,
-      pval=corfun(GrowingSeasontempAnomaly, YieldPercentChange)$p.value) 
+peanutspptcorr <- ddply(peanuts, .(FIPS), summarise,corr=corfun(GrowingSeasonAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(GrowingSeasonAnomaly, YieldPercentChange)$p.value) 
+peanutstempcorr <- ddply(peanuts, .(FIPS), summarise,corr=corfun(GrowingSeasonTempAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(GrowingSeasonTempAnomaly, YieldPercentChange)$p.value) 
 
-soybeanspptcorr <- ddply(soybeans, .(State), summarise,corr=corfun(GrowingSeasonpptAnomaly, YieldPercentChange)$estimate,
-      pval=corfun(GrowingSeasonpptAnomaly, YieldPercentChange)$p.value) 
-soybeanstempcorr <- ddply(soybeans, .(State), summarise,corr=corfun(GrowingSeasontempAnomaly, YieldPercentChange)$estimate,
-      pval=corfun(GrowingSeasontempAnomaly, YieldPercentChange)$p.value) 
+soybeanspptcorr <- ddply(soybeans, .(FIPS), summarise,corr=corfun(GrowingSeasonAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(GrowingSeasonAnomaly, YieldPercentChange)$p.value) 
+soybeanstempcorr <- ddply(soybeans, .(FIPS), summarise,corr=corfun(GrowingSeasonTempAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(GrowingSeasonTempAnomaly, YieldPercentChange)$p.value) 
 
-sweetPotatoespptcorr <- ddply(sweetPotatoes, .(State), summarise,corr=corfun(GrowingSeasonpptAnomaly, YieldPercentChange)$estimate,
-      pval=corfun(GrowingSeasonpptAnomaly, YieldPercentChange)$p.value) 
-sweetPotatoestempcorr <- ddply(sweetPotatoes, .(State), summarise,corr=corfun(GrowingSeasontempAnomaly, YieldPercentChange)$estimate,
-      pval=corfun(GrowingSeasontempAnomaly, YieldPercentChange)$p.value) 
+sweetPotatoespptcorr <- ddply(sweetPotatoes, .(FIPS), summarise,corr=corfun(GrowingSeasonAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(GrowingSeasonAnomaly, YieldPercentChange)$p.value) 
+sweetPotatoestempcorr <- ddply(sweetPotatoes, .(FIPS), summarise,corr=corfun(GrowingSeasonTempAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(GrowingSeasonTempAnomaly, YieldPercentChange)$p.value) 
+
+#May Correlations
+
+
+maycornpptcorr <- ddply(corn, .(State), summarise,corr=corfun(maypptAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(maypptAnomaly, YieldPercentChange)$p.value) 
+maycorntempcorr <- ddply(corn, .(State), summarise,corr=corfun(maytempAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(maytempAnomaly, YieldPercentChange)$p.value) 
+
+maycottonpptcorr <- ddply(cotton, .(State), summarise,corr=corfun(maypptAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(maypptAnomaly, YieldPercentChange)$p.value) 
+maycottontempcorr <- ddply(cotton, .(State), summarise,corr=corfun(maytempAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(maytempAnomaly, YieldPercentChange)$p.value) 
+
+maypeanutspptcorr <- ddply(peanuts, .(State), summarise,corr=corfun(maypptAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(maypptAnomaly, YieldPercentChange)$p.value) 
+maypeanutstempcorr <- ddply(peanuts, .(State), summarise,corr=corfun(maytempAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(maytempAnomaly, YieldPercentChange)$p.value) 
+
+maysoybeanspptcorr <- ddply(soybeans, .(State), summarise,corr=corfun(maypptAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(maypptAnomaly, YieldPercentChange)$p.value) 
+maysoybeanstempcorr <- ddply(soybeans, .(State), summarise,corr=corfun(maytempAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(maytempAnomaly, YieldPercentChange)$p.value) 
+
+maysweetPotatoespptcorr <- ddply(sweetPotatoes, .(State), summarise,corr=corfun(maypptAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(maypptAnomaly, YieldPercentChange)$p.value) 
+maysweetPotatoestempcorr <- ddply(sweetPotatoes, .(State), summarise,corr=corfun(maytempAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(maytempAnomaly, YieldPercentChange)$p.value) 
+
+#JUne Correlations
+
+juncornpptcorr <- ddply(corn, .(State), summarise,corr=corfun(junpptAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(junpptAnomaly, YieldPercentChange)$p.value) 
+juncorntempcorr <- ddply(corn, .(State), summarise,corr=corfun(juntempAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(juntempAnomaly, YieldPercentChange)$p.value) 
+
+juncottonpptcorr <- ddply(cotton, .(State), summarise,corr=corfun(junpptAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(junpptAnomaly, YieldPercentChange)$p.value) 
+juncottontempcorr <- ddply(cotton, .(State), summarise,corr=corfun(juntempAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(juntempAnomaly, YieldPercentChange)$p.value) 
+
+junpeanutspptcorr <- ddply(peanuts, .(State), summarise,corr=corfun(junpptAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(junpptAnomaly, YieldPercentChange)$p.value) 
+junpeanutstempcorr <- ddply(peanuts, .(State), summarise,corr=corfun(juntempAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(juntempAnomaly, YieldPercentChange)$p.value) 
+
+junsoybeanspptcorr <- ddply(soybeans, .(State), summarise,corr=corfun(junpptAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(junpptAnomaly, YieldPercentChange)$p.value) 
+junsoybeanstempcorr <- ddply(soybeans, .(State), summarise,corr=corfun(juntempAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(juntempAnomaly, YieldPercentChange)$p.value) 
+
+junsweetPotatoespptcorr <- ddply(sweetPotatoes, .(State), summarise,corr=corfun(junpptAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(junpptAnomaly, YieldPercentChange)$p.value) 
+junsweetPotatoestempcorr <- ddply(sweetPotatoes, .(State), summarise,corr=corfun(juntempAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(juntempAnomaly, YieldPercentChange)$p.value) 
+
+#Jul Corr
+
+julcornpptcorr <- ddply(corn, .(State), summarise,corr=corfun(julpptAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(julpptAnomaly, YieldPercentChange)$p.value) 
+julcorntempcorr <- ddply(corn, .(State), summarise,corr=corfun(jultempAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(jultempAnomaly, YieldPercentChange)$p.value) 
+
+julcottonpptcorr <- ddply(cotton, .(State), summarise,corr=corfun(julpptAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(julpptAnomaly, YieldPercentChange)$p.value) 
+julcottontempcorr <- ddply(cotton, .(State), summarise,corr=corfun(jultempAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(jultempAnomaly, YieldPercentChange)$p.value) 
+
+julpeanutspptcorr <- ddply(peanuts, .(State), summarise,corr=corfun(julpptAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(julpptAnomaly, YieldPercentChange)$p.value) 
+julpeanutstempcorr <- ddply(peanuts, .(State), summarise,corr=corfun(jultempAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(jultempAnomaly, YieldPercentChange)$p.value) 
+
+julsoybeanspptcorr <- ddply(soybeans, .(State), summarise,corr=corfun(julpptAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(julpptAnomaly, YieldPercentChange)$p.value) 
+julsoybeanstempcorr <- ddply(soybeans, .(State), summarise,corr=corfun(jultempAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(jultempAnomaly, YieldPercentChange)$p.value) 
+
+julsweetPotatoespptcorr <- ddply(sweetPotatoes, .(State), summarise,corr=corfun(julpptAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(julpptAnomaly, YieldPercentChange)$p.value) 
+julsweetPotatoestempcorr <- ddply(sweetPotatoes, .(State), summarise,corr=corfun(jultempAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(jultempAnomaly, YieldPercentChange)$p.value) 
+
+
+#Aug COrr
+
+augcornpptcorr <- ddply(corn, .(State), summarise,corr=corfun(augpptAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(augpptAnomaly, YieldPercentChange)$p.value) 
+augcorntempcorr <- ddply(corn, .(State), summarise,corr=corfun(augtempAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(augtempAnomaly, YieldPercentChange)$p.value) 
+
+augcottonpptcorr <- ddply(cotton, .(State), summarise,corr=corfun(augpptAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(augpptAnomaly, YieldPercentChange)$p.value) 
+augcottontempcorr <- ddply(cotton, .(State), summarise,corr=corfun(augtempAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(augtempAnomaly, YieldPercentChange)$p.value) 
+
+augpeanutspptcorr <- ddply(peanuts, .(State), summarise,corr=corfun(augpptAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(augpptAnomaly, YieldPercentChange)$p.value) 
+augpeanutstempcorr <- ddply(peanuts, .(State), summarise,corr=corfun(augtempAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(augtempAnomaly, YieldPercentChange)$p.value) 
+
+augsoybeanspptcorr <- ddply(soybeans, .(State), summarise,corr=corfun(augpptAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(augpptAnomaly, YieldPercentChange)$p.value) 
+augsoybeanstempcorr <- ddply(soybeans, .(State), summarise,corr=corfun(augtempAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(augtempAnomaly, YieldPercentChange)$p.value) 
+
+augsweetPotatoespptcorr <- ddply(sweetPotatoes, .(State), summarise,corr=corfun(augpptAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(augpptAnomaly, YieldPercentChange)$p.value) 
+augsweetPotatoestempcorr <- ddply(sweetPotatoes, .(State), summarise,corr=corfun(augtempAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(augtempAnomaly, YieldPercentChange)$p.value) 
+
+#Sep Corr
+
+sepcornpptcorr <- ddply(corn, .(State), summarise,corr=corfun(seppptAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(seppptAnomaly, YieldPercentChange)$p.value) 
+sepcorntempcorr <- ddply(corn, .(State), summarise,corr=corfun(septempAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(septempAnomaly, YieldPercentChange)$p.value) 
+
+sepcottonpptcorr <- ddply(cotton, .(State), summarise,corr=corfun(seppptAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(seppptAnomaly, YieldPercentChange)$p.value) 
+sepcottontempcorr <- ddply(cotton, .(State), summarise,corr=corfun(septempAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(septempAnomaly, YieldPercentChange)$p.value) 
+
+seppeanutspptcorr <- ddply(peanuts, .(State), summarise,corr=corfun(seppptAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(seppptAnomaly, YieldPercentChange)$p.value) 
+seppeanutstempcorr <- ddply(peanuts, .(State), summarise,corr=corfun(septempAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(septempAnomaly, YieldPercentChange)$p.value) 
+
+sepsoybeanspptcorr <- ddply(soybeans, .(State), summarise,corr=corfun(seppptAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(seppptAnomaly, YieldPercentChange)$p.value) 
+sepsoybeanstempcorr <- ddply(soybeans, .(State), summarise,corr=corfun(septempAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(septempAnomaly, YieldPercentChange)$p.value) 
+
+sepsweetPotatoespptcorr <- ddply(sweetPotatoes, .(State), summarise,corr=corfun(seppptAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(seppptAnomaly, YieldPercentChange)$p.value) 
+sepsweetPotatoestempcorr <- ddply(sweetPotatoes, .(State), summarise,corr=corfun(septempAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(septempAnomaly, YieldPercentChange)$p.value) 
+
+#Oct Corr
+
+octcornpptcorr <- ddply(corn, .(State), summarise,corr=corfun(octpptAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(octpptAnomaly, YieldPercentChange)$p.value) 
+octcorntempcorr <- ddply(corn, .(State), summarise,corr=corfun(octtempAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(octtempAnomaly, YieldPercentChange)$p.value) 
+
+octcottonpptcorr <- ddply(cotton, .(State), summarise,corr=corfun(octpptAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(octpptAnomaly, YieldPercentChange)$p.value) 
+octcottontempcorr <- ddply(cotton, .(State), summarise,corr=corfun(octtempAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(octtempAnomaly, YieldPercentChange)$p.value) 
+
+octpeanutspptcorr <- ddply(peanuts, .(State), summarise,corr=corfun(octpptAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(octpptAnomaly, YieldPercentChange)$p.value) 
+octpeanutstempcorr <- ddply(peanuts, .(State), summarise,corr=corfun(octtempAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(octtempAnomaly, YieldPercentChange)$p.value) 
+
+octsoybeanspptcorr <- ddply(soybeans, .(State), summarise,corr=corfun(octpptAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(octpptAnomaly, YieldPercentChange)$p.value) 
+octsoybeanstempcorr <- ddply(soybeans, .(State), summarise,corr=corfun(octtempAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(octtempAnomaly, YieldPercentChange)$p.value) 
+
+octsweetPotatoespptcorr <- ddply(sweetPotatoes, .(State), summarise,corr=corfun(octpptAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(octpptAnomaly, YieldPercentChange)$p.value) 
+octsweetPotatoestempcorr <- ddply(sweetPotatoes, .(State), summarise,corr=corfun(octtempAnomaly, YieldPercentChange)$estimate,
+      pval=corfun(octtempAnomaly, YieldPercentChange)$p.value) 
 
 #write.csv(cornpptcorr, "cornpptcorrelations.csv")
 #write.csv(cottonpptcorr, "cottonpptcorrelations.csv")
@@ -251,29 +421,30 @@ sweetPotatoestempcorr <- ddply(sweetPotatoes, .(State), summarise,corr=corfun(Gr
 #Run  statistics and Plot
 ```{r}
 
-p <- ggviolin(soybeans, x = "octpptDays99", y = "YieldPercentChange",
-               fill = "GSTempCategories", shape = "GSTempCategories", palette =c("#FC4E07","#E7B800","#00AFBB"), add = "boxplot", add.params = list(fill = "white") , order = c("Below Normal", "Near Normal", "Above Normal")) + scale_x_discrete( 
-                     labels = c('Below\nNormal', 'Near\nNormal', 'Above\nNormal'))
+p <- ggboxplot(sweetPotatoes, x = "GSTempCategories_f", y = "YieldPercentChange",
+               fill = "GSpptCategories_f", shape = "GSpptCategories_f", palette =c("#FC4E07","#E7B800","#00AFBB"), add = "boxplot", order = c("Below Normal", "Near Normal", "Above Normal")) + scale_x_discrete(labels = c('Below\nNormal', 'Near\nNormal', 'Above\nNormal'))
 
 p
 
 
 p2 <- ggpar(p, 
-            title = "Soybeans",
+            title = "sweetPotatoes",
             subtitle = "",
             caption = "",
-            xlab ="", 
+            xlab ="\nGrowing Season \n Maximum Temperature", 
             ylab = "Yield Percent Difference",
-            legend.title = "     Growing Season \n Precipitation") + theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
+            legend.title = "Growing Season \n  Precipitation") + theme(plot.title = element_text(hjust = 0.5), legend.position = "right")
 p2
 
 
-p3 <- p2 + facet_wrap(. ~ State) + stat_compare_means(method = "kruskal.test", label = "p.format", label.y = 115) + stat_compare_means(label = "p.signif", method = "wilcox.test", ref.group = "Near Normal", label.y = 100)  
+p3 <- p2 + facet_wrap(. ~ State) 
 
-soybeanspptplot <- p3
+sweetPotatoesplot <- p3
+ggsave(filename = "sweetPotatoestempppt.tiff", plot = sweetPotatoesplot)
+
+##stat_compare_means(method = "kruskal.test", label = "p.format", label.y = 115) + stat_compare_means(label = "p.signif", method = "wilcox.test", ref.group = "Near Normal", label.y = 100)  
 
 
-#ggsave(filename = "cornppt.tiff", plot = cornpptplot)
 ```
 
 
