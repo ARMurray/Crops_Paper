@@ -4,6 +4,8 @@ library(dplyr)
 library(formattable)
 library(tidyr)
 
+# PRECIPITATION
+
 ppt <- read.csv(here("data/Correlations/ppt_Correlations.csv"))%>%
   replace(.,is.na(.),"--")
 
@@ -36,3 +38,39 @@ scPptTbl <- formattable(scPpt,align =c("l","c","c","c","c","c"),
                           "span", style = ~ style(color = "grey",font.weight = "bold")) 
                         ))
 scPptTbl
+
+# TEMPERATURE
+
+temp <- read.csv(here("data/Correlations/temp_Correlations.csv"))%>%
+  replace(.,is.na(.),"--")
+
+# Georgia temp
+gaTemp <- temp%>%
+  filter(State == "Georgia")%>%
+  select(-"Sweet.Potatoes", -State)
+gaTempTbl <- formattable(gaTemp,align =c("l","c","c","c","c"), 
+                        list(`Month` = formatter(
+                          "span", style = ~ style(color = "grey",font.weight = "bold")) 
+                        ))
+gaTempTbl
+
+# North Carolina temp
+ncTemp <- temp%>%
+  filter(State == "N_Carolina")%>%
+  select(-State)
+colnames(ncTemp)[6] <- "Sweet Potatoes"
+ncTempTbl <- formattable(ncPpt,align =c("l","c","c","c","c","c"), 
+                        list(`Month` = formatter(
+                          "span", style = ~ style(color = "grey",font.weight = "bold")) 
+                        ))
+ncTempTbl
+
+# South Carolina temp
+scTemp <- temp%>%
+  filter(State == "S_Carolina")%>%
+  select(-"Sweet.Potatoes", -State)
+scTempTbl <- formattable(scTemp,align =c("l","c","c","c","c"), 
+                         list(`Month` = formatter(
+                           "span", style = ~ style(color = "grey",font.weight = "bold")) 
+                         ))
+scTempTbl
