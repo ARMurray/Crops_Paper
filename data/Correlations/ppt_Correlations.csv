@@ -1,0 +1,19 @@
+Month,Corn,Cotton,Peanuts,Soybeans,Sweet Potatoes,State
+May,0.22,0.26,0.18,0.13,,Georgia
+June,0.29,0.02,0.06,0.23,,Georgia
+July,0.29,0.22,0.18,0.29,,Georgia
+August,0.08,0.17,0.21,0.28,,Georgia
+September,-0.15,-0.33,-0.15,-0.02,,Georgia
+October,-0.11,0.01,-0.23,-0.06,,Georgia
+May,0.15,0.14,0.14,0.14,0.04,N_Carolina
+June,0.48,-0.04,-0.12,0.11,-0.12,N_Carolina
+July,0.37,0.23,0.17,0.29,-0.06,N_Carolina
+August,0.03,0.12,0.25,0.28,0.03,N_Carolina
+September,-0.06,-0.26,-0.24,0.07,-0.24,N_Carolina
+October,-0.08,-0.34,-0.32,-0.28,-0.29,N_Carolina
+May,0.18,0.25,-0.03,0.13,,S_Carolina
+June,0.55,0.06,-0.11,0.2,,S_Carolina
+July,0.42,0.42,0.24,0.23,,S_Carolina
+August,-0.03,0.02,0.09,0.22,,S_Carolina
+September,-0.14,-0.14,-0.01,0.13,,S_Carolina
+October,-0.1,-0.24,-0.08,-0.04,,S_Carolina
