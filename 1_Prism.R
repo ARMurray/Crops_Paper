@@ -1,4 +1,4 @@
-#library(prism)
+library(prism)
 library(raster)
 library(dplyr)
 library(sf)
@@ -9,6 +9,23 @@ library(ggplot2)
 #       *******************IT TAKES AT LEAST ONE HOUR***********************
 # Download the data
 #get_prism_annual('ppt', years = 1987:2017)
+
+
+
+#Download ppt
+#options(prism.path = "/proj/diegorilab/users/Andrew/Crops_Paper/data/prism/ppt")
+#get_prism_dailys('ppt',minDate = "1981-01-01",maxDate = "2018-12-31" ,keepZip = FALSE)
+
+# Download TMin
+options(prism.path = "/proj/diegorilab/users/Andrew/Crops_Paper/data/prism/tmin")
+get_prism_dailys('tmin',minDate = "1995-12-09",maxDate = "2018-12-31" ,keepZip = FALSE)
+
+# Download TMax
+options(prism.path = "/proj/diegorilab/users/Andrew/Crops_Paper/data/prism/tmax")
+get_prism_dailys('tmax',minDate = "1981-01-01",maxDate = "2018-12-31" ,keepZip = FALSE)
+
+
+
 
 # Get list of Prism files
 
