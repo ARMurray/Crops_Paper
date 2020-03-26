@@ -4,6 +4,8 @@ library(dplyr)
 library(sf)
 library(tidyr)
 library(ggplot2)
+library(here)
+
 
 # *****THIS CHUNK IS TO DOWNLOAD AND PREPARE DATA AND SHOULD ONLY BE RUN ONCE******
 #       *******************IT TAKES AT LEAST ONE HOUR***********************
@@ -13,58 +15,66 @@ library(ggplot2)
 
 
 #Download ppt
-#options(prism.path = "/proj/diegorilab/users/Andrew/Crops_Paper/data/prism/ppt")
+#options(prism.path = here("data/prism/ppt"))
 #get_prism_dailys('ppt',minDate = "1981-01-01",maxDate = "2018-12-31" ,keepZip = FALSE)
 
 # Download TMin
-options(prism.path = "/proj/diegorilab/users/Andrew/Crops_Paper/data/prism/tmin")
-get_prism_dailys('tmin',minDate = "1995-12-09",maxDate = "2018-12-31" ,keepZip = FALSE)
+#options(prism.path = here("data/prism/tmin"))
+#get_prism_dailys('tmin',minDate = "1995-12-09",maxDate = "2018-12-31" ,keepZip = FALSE)
 
 # Download TMax
-options(prism.path = "/proj/diegorilab/users/Andrew/Crops_Paper/data/prism/tmax")
-get_prism_dailys('tmax',minDate = "1981-01-01",maxDate = "2018-12-31" ,keepZip = FALSE)
+#options(prism.path = here("data/prism/tmax"))
+#get_prism_dailys('tmax',minDate = "1981-01-01",maxDate = "2018-12-31" ,keepZip = FALSE)
+
+# ***********************************************************************************
+
+## Begin Parsing and Restructure of Data Here
 
 
+## First, we will parse through all of the precipitation files. We then import a shapefile of
+## counties we are analyzing and project the counties to match the projection of the prism data.
+## We then reaggregate the prism data to calculate average precipitation by county, for every day
+## since the start of the analysis (January 1, 1981)
 
+# Get list of Prism Precipitation files
 
-# Get list of Prism files
+list <- list.files(path = here("data/prism/ppt"), pattern = '.bil$', recursive = TRUE,full.names = TRUE)
 
-#list <- paste0("~/Documents/Geog_803/prism/",list.files(path = "~/Documents/Geog_803/prism/", pattern = '.bil$', recursive = TRUE))
+# Import the shapefile of counties
+US_Counties <- st_read(here("data/shapefiles/tl_2015_us_county.shp"))
 
-#US_Counties <- st_read("~/Documents/Geog_803/shapefiles/US_county_2010.shp")
-
-#SE_Counties <- US_Counties%>%
-#  dplyr::filter(STATEFP10 == "37"| STATEFP10 == "13"| STATEFP10 == "45"| STATEFP10 == "51")
+# Subset the national counties to our study area
+SE_Counties <- US_Counties%>%
+  dplyr::filter(STATEFP %in% c("37","13","45"))
 
 # Get CRS code table
 #crs_data = rgdal::make_EPSG()
 #View(crs_data)
 
-# Set Coordinate Reference System (NAD83 CONUS Albers - meters)
-#st_set_crs(SE_Counties,5070)
-
-# Reproject Counties to the crs of the prism data 
+# Make sure to check the projections, and if needed, 
+# reproject Counties to the crs of the prism data 
 # to perform spatial operations between them
-#Counties <- st_transform(SE_Counties,4269)
+Counties <- st_transform(SE_Counties,4269)
 
-#outData <- data.frame("County"=SE_Counties$NAMELSAD10,"StateFips"=SE_Counties$STATEFP10,"CT_Fips"=SE_Counties$COUNTYFP10)
 
-# For loop to extract all of the avg ppt by county ... This took over an hour and the csv was already created
-# Skip this step and import the csv below
-#for(n in 1:length(list)){
-#  filename <- list[n]
-#  prism <- raster(filename)
-#  year <- substr(list[n],51,54)
-#  object <- paste0("prism_ppt_",year)
+
+outData <- data.frame("County"=SE_Counties$NAMELSAD,"StateFips"=SE_Counties$STATEFP,"CT_Fips"=SE_Counties$COUNTYFP)
+
+# For loop to extract all of the avg ppt by county ... This will take a long time (> 1 hour)
+for(n in 1:length(list)){
+  filename <- list[n]
+  prism <- raster(filename)
+  year <- substr(list[n],51,54)
+  object <- paste0("prism_ppt_",year)
   
   #Calculate the mean ppt for each county
-#  rastVals <- raster::extract(prism, Counties)
-#  countyMeans <- lapply(rastVals, FUN=mean)
-#  newData <- data.frame("ppt_mean"=countyMeans)
-#  newDataLong <- gather(newData)
-#  outData <- cbind(outData, newDataLong$value)
+  rastVals <- raster::extract(prism, Counties)
+  countyMeans <- lapply(rastVals, FUN=mean)
+  newData <- data.frame("ppt_mean"=countyMeans)
+  newDataLong <- gather(newData)
+  outData <- cbind(outData, newDataLong$value)
   
-#}
+}
 #*********************************************************************
 #************BEGIN HERE TO FORMAT TABLES******************
 
