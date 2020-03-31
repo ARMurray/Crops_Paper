@@ -29,7 +29,14 @@ cornSf <- left_join(sf,cornCount, by = c("GEOID"="FIPS"))%>%
 cornPlot <- ggplot(cornSf)+
   geom_sf(aes(fill = Over_30))+
   scale_fill_manual(values = c("#e5b91c"),na.value="#adaca8")+
-  theme(legend.position = 'none')
+  theme(legend.position = 'none',
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.text.x=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks=element_blank(),
+        axis.title.x=element_blank(),
+        axis.title.y=element_blank())
 
 
 ## COTTON ##
@@ -48,7 +55,14 @@ cottonSf <- left_join(sf,cottonCount, by = c("GEOID"="FIPS"))%>%
 cottonPlot <- ggplot(cottonSf)+
   geom_sf(aes(fill = Over_30))+
   scale_fill_manual(values = c("#5fadcc"),na.value="#adaca8")+
-  theme(legend.position = 'none')
+  theme(legend.position = 'none',
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.text.x=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks=element_blank(),
+        axis.title.x=element_blank(),
+        axis.title.y=element_blank())
 
 ## PEANUTS ##
 
@@ -67,7 +81,14 @@ peanutSf <- left_join(sf,peanutCount, by = c("GEOID"="FIPS"))%>%
 peanutPlot <- ggplot(peanutSf)+
   geom_sf(aes(fill = Over_30))+
   scale_fill_manual(values = c("#e30425"),na.value="#adaca8")+
-  theme(legend.position = 'none')
+  theme(legend.position = 'none',
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.text.x=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks=element_blank(),
+        axis.title.x=element_blank(),
+        axis.title.y=element_blank())
 
 
 ## SOYBEANS##
@@ -87,7 +108,14 @@ soybeanSf <- left_join(sf,soybeanCount, by = c("GEOID"="FIPS"))%>%
 soybeanPlot <- ggplot(soybeanSf)+
   geom_sf(aes(fill = Over_30))+
   scale_fill_manual(values = c("#0a8974"),na.value="#adaca8")+
-  theme(legend.position = 'none')
+  theme(legend.position = 'none',
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.text.x=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks=element_blank(),
+        axis.title.x=element_blank(),
+        axis.title.y=element_blank())
 
 
 ## SWEET POTATOES## 
@@ -108,8 +136,15 @@ potatoSf <- left_join(sf,potatoCount, by = c("GEOID"="FIPS"))%>%
 potatoPlot <- ggplot(potatoSf)+
   geom_sf(aes(fill = Over_30))+
   scale_fill_manual(values = c("#e47927"),na.value="#adaca8")+
-  theme(legend.position = 'none')
+  theme(legend.position = 'none',
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.text.x=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks=element_blank(),
+        axis.title.x=element_blank(),
+        axis.title.y=element_blank())
 
 
-plot <- subplot(cottonPlot,cornPlot,peanutPlot,soybeanPlot, nrows = 2, shareY = TRUE, shareX = TRUE, margin = 0)
+plot <- plotly::subplot(cottonPlot,cornPlot,peanutPlot,soybeanPlot, nrows = 2, shareY = TRUE, shareX = TRUE, margin = -)
 plot
