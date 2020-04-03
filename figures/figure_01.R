@@ -5,10 +5,10 @@ library(here)
 library(ggplot2)
 
 # Import table
-df <- read.csv("/proj/diegorilab/users/Andrew/Crops_Paper/data/Crops_Final_Figs/Crops_Final_Figs/Fig1/FilteredCropData.csv")
+df <- read.csv(here("data/Crops_Final_Figs/Crops_Final_Figs/Fig1/FilteredCropData.csv"))
 
 # Import shapefile of counties
-sf <- st_read("/proj/diegorilab/users/Andrew/Crops_Paper/data/shapefiles/tl_2015_us_county.shp")%>%
+sf <- st_read(here("data/shapefiles/tl_2015_us_county.shp"))%>%
   dplyr::filter(STATEFP %in% c("37","13","45"))%>%
   st_transform(crs=2958)
 
@@ -146,5 +146,5 @@ potatoPlot <- ggplot(potatoSf)+
         axis.title.y=element_blank())
 
 
-plot <- plotly::subplot(cottonPlot,cornPlot,peanutPlot,soybeanPlot, nrows = 2, shareY = TRUE, shareX = TRUE, margin = -)
+plot <- plotly::subplot(cottonPlot,cornPlot,peanutPlot,soybeanPlot, nrows = 2, shareY = TRUE, shareX = TRUE, margin = -.01)
 plot
