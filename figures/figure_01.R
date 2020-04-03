@@ -146,5 +146,6 @@ potatoPlot <- ggplot(potatoSf)+
         axis.title.y=element_blank())
 
 
+<<<<<<< HEAD
 plot <- plotly::subplot(cottonPlot,cornPlot,peanutPlot,soybeanPlot, nrows = 2, shareY = TRUE, shareX = TRUE, margin = -)
 plot
