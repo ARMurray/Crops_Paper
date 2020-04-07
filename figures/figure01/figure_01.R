@@ -8,14 +8,13 @@ library(gridExtra)
 # Import table
 df <- read.csv(here("data/Crops_Final_Figs/Crops_Final_Figs/Fig1/FilteredCropData.csv"))
 
-
-layers <- st_layers(here("data/boundaries.gdb"))
-
+#layers <- st_layers(here("data/boundaries.gdb"))
 
 # Import county polygons
 sf <- st_read(here(dsn="data/boundaries.gdb"),layer = "US_county_2010")%>%
   dplyr::filter(STATEFP10 %in% c("37","13","45"))%>%
-  st_transform(crs=2958)
+  st_transform(crs=2958)%>%
+  mutate('GEOID10'=as.integer(as.character(GEOID10)))
 
 # Import state polygons
 states <- st_read(here(dsn="data/boundaries.gdb"),layer = "US_state_2010")%>%
@@ -31,6 +30,8 @@ cornCount <- df%>%
   table()%>%
   as.data.frame()
 colnames(cornCount) <- c("FIPS","cornYears")
+
+cornCount$FIPS <- as.integer(as.character(cornCount$FIPS))
 
 cornSf <- left_join(sf,cornCount, by = c("GEOID10"="FIPS"))%>%
   mutate("Over_30"=ifelse(cornYears > 29, "YES","NO"))
