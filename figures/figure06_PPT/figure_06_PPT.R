@@ -9,13 +9,13 @@ library(gridExtra)
 var <- 'PPT'
 
 # Colors for Classification
-cols <- c("-0.71 : -0.5" = "#730000",
-          "< -0.5" = "#a80000",
-          "< -.05" = "#d95d5d",
-          "< 0.05" = "#FFFFFF",
-          "< 0.25" = "#94f2ab",
-          "< 0.50" = "#43c463",
-          "0.50 : 0.67" = "#0b992e")
+cols <- c("-0.71 : -0.50" = "#800505",
+          "< -0.25" = "#bf1717",
+          "< -0.05" = "#d95d5d",
+          "< 0.05" = "#e0ce75",
+          "< 0.25" = "#43c463",
+          "< 0.50" = "#1d7d35",
+          "0.50 : 0.67" = "#025216")
 
 # Import county polygons
 sf <- st_read(here(dsn="data/boundaries.gdb"),layer = "US_county_2010")%>%
@@ -30,11 +30,11 @@ states <- st_read(here(dsn="data/boundaries.gdb"),layer = "US_state_2010")%>%
 
 # Import Data
 df <- read.csv(paste0(here("data/Crops_Final_Figs/Crops_Final_Figs/Figs6and8"),"/",var,"CountyCorrelation.csv"))%>%
-  mutate('Class' = ifelse(corr < -.5, "-0.71 : -0.5",
-                          ifelse(corr < -.25,"< -0.5",
-                                 ifelse(corr < 0,"< -.05",
-                                        ifelse(corr < .25,"< 0.05",
-                                               ifelse(corr < .5,"< 0.25",
+  mutate('Class' = ifelse(corr < -.5, "-0.71 : -0.50",
+                          ifelse(corr < -.25,"< -0.25",
+                                 ifelse(corr < -0.05,"< -0.05",
+                                        ifelse(corr < 0.05,"< 0.05",
+                                               ifelse(corr < .25,"< 0.25",
                                                       ifelse(corr < .5,"< 0.50","0.50 : 0.67")))))))
 # Filter to Corn
 corn <- df%>%
