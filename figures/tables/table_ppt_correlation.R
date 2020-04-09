@@ -3,6 +3,7 @@ library(tidyverse)
 library(scales)
 library(here)
 library(htmlwidgets)
+library(webshot)
 
 df <- read.csv(here("data/Crops_Final_Figs/Crops_Final_Figs/Tables1and2/StateCropsPPtCorrelation.csv"))%>%
   mutate("Month" = month.abb[month],
@@ -14,7 +15,8 @@ df <- read.csv(here("data/Crops_Final_Figs/Crops_Final_Figs/Tables1and2/StateCro
 # create color scale to match the corelation plots
 scale <- col_bin(cols <- c("#800505","#bf1717","#d95d5d","#e0ce75","#43c463","#1d7d35","#025216"),
                  domain = c(-0.71,0.67),
-                 bins = c(-0.71,-0.5,-0.25,-0.05,0.05,0.25,0.5,0.67))
+                 bins = c(-0.71,-0.5,-0.25,-0.05,0.05,0.25,0.5,0.67),
+                 na.color = "#c4c4c0")
 
 # Pivot the table to wide format
 dfWide <-df%>%
@@ -23,7 +25,7 @@ colnames(dfWide) <- c("State","stateNo","Month","month","CORN","COTTON","PEANUTS
                       "pCORN","pCOTTON","pPEANUTS","pSOYBEANS","pSWEETPOTATOES")
 
 # Make Table
-dfWide%>%
+ppt <- dfWide%>%
   gt(groupname_col = "State")%>%
   tab_header("Precipitation")%>%
   tab_source_note(md("Statistically significant correlations (p-value < 0.05) denoted by **bold white** font"))%>%
@@ -66,3 +68,5 @@ dfWide%>%
     stub.border.width = "1px",
     summary_row.border.color = "#000000"
   )
+
+gtsave(ppt,here("figures/tables/ppt_correlations.pdf"))
