@@ -1,5 +1,6 @@
 library(ggplot2)
 library(ggpubr)
+library(ggsn)
 library(dplyr)
 library(sf)
 library(here)
@@ -42,8 +43,20 @@ maxT <- sf%>%
   geom_sf(aes(fill = class))+
   scale_fill_manual(values = c("21.5 - 23.6" = "#fef0d9","23.7 - 25.6" = "#fdcc8a","25.7 - 27.6" = "#fc8d59","27.7 - 29.6" = "#e34a33", "29.7 - 31.7" = "#b30000"),
                     name="Average Maximum \n Temperature (°C)")+
-  geom_text(aes(x=-85,y=36, label = "A"), size = 8)+
-  labs(x="",y="")
+  labs(x="",y="")+
+  theme(axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.line = element_line(colour = "black"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank())+
+  blank() +
+  north(sf, location = "topleft", scale = .1, symbol = 12) +
+  scalebar(sf, dist = 200, dist_unit = "km",
+           transform = TRUE, model = "WGS84",height = .05, st.size = 3,
+           st.bottom = FALSE,st.dist = .05, location = "bottomright")
+
 
 
 #maxT
@@ -76,8 +89,19 @@ minT <- sf%>%
   geom_sf(aes(fill = class))+
   scale_fill_manual(values = c("10.5 - 12.5" = "#0868ac","12.6 - 14.4" = "#43a2ca","14.5 - 16.4" = "#7bccc4","16.5 - 18.4" = "#bae4bc", "18.5 - 20.4" = "#f0f9e8"),
                     name="Average Minimum \n Temperature (°C)")+
-  geom_text(aes(x=-85,y=36, label = "B"), size = 8)+
-  labs(x="",y="")
+  labs(x="",y="")+
+  theme(axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.line = element_line(colour = "black"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank())+
+  blank() +
+  north(sf, location = "topleft", scale = .1, symbol = 12) +
+  scalebar(sf, dist = 200, dist_unit = "km",
+           transform = TRUE, model = "WGS84",height = .05, st.size = 3,
+           st.bottom = FALSE,st.dist = .05, location = "bottomright")
 
 
 #minT
@@ -110,8 +134,19 @@ meanPpt <- sf%>%
   geom_sf(aes(fill = class))+
   scale_fill_manual(values = c("538 - 621" = "#FFFFA1","622 - 704" = "#94EF62","705 - 786" = "#6DC98D","787 - 869" = "#5992B5", "870 - 952" = "#2F528F"),
                     name="    Average \n Precipitation (mm)")+
-  geom_text(aes(x=-85,y=36, label = "C"), size = 8)+
-  labs(x="",y="")
+  labs(x="",y="")+
+  theme(axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.line = element_line(colour = "black"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank())+
+  blank() +
+  north(sf, location = "topleft", scale = .1, symbol = 12) +
+  scalebar(sf, dist = 200, dist_unit = "km",
+           transform = TRUE, model = "WGS84",height = .05, st.size = 3,
+           st.bottom = FALSE,st.dist = .05, location = "bottomright")
 
 
 #meanPpt
@@ -122,11 +157,6 @@ meanPpt <- sf%>%
 
 fig <- ggarrange(maxT,minT,meanPpt, nrow = 1)
 
-annotate_figure(fig,
-                top = text_grob("Visualizing Tooth Growth", color = "red", face = "bold", size = 14),
-                bottom = text_grob("Data source: \n ToothGrowth data set", color = "blue",
-                                   hjust = 1, x = 1, face = "italic", size = 10),
-                left = text_grob("Figure arranged using ggpubr", color = "green", rot = 90),
-                right = "I'm done, thanks :-)!",
-                fig.lab = "Figure 1", fig.lab.face = "bold"
-)
+fig
+
+
